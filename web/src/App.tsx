@@ -20,15 +20,7 @@ const App = () => {
   const { reset } = useAegis();
 
   return (
-    <div className="min-h-screen flex flex-col relative z-0">
-      {/* Global ambient shader — quiet, continuous, fades the whole page */}
-      <div
-        aria-hidden
-        className="fixed inset-0 -z-10 opacity-[0.18] pointer-events-none"
-      >
-        <Shader />
-      </div>
-
+    <div className="min-h-screen flex flex-col">
       <Hero />
 
       <Tldr />
@@ -45,8 +37,16 @@ const App = () => {
 
       <section
         id="demo"
-        className="relative w-full px-6 lg:px-10 py-24 lg:py-28"
+        className="relative w-full px-6 lg:px-10 py-24 lg:py-28 overflow-hidden isolate"
       >
+        {/* Quiet shader behind the section header — fades to ink before the cards. */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-[40%] -z-10 pointer-events-none opacity-40"
+        >
+          <Shader />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/60 via-ink-950/80 to-ink-950" />
+        </div>
         <div className="mx-auto max-w-[1400px]">
           <motion.div
             initial={{ opacity: 0, y: 14 }}

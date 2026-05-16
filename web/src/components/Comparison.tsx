@@ -76,7 +76,7 @@ export const Comparison = () => (
         </h2>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-800/60 rounded-2xl overflow-hidden border border-ink-800/60 mb-px">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-800/60 rounded-2xl overflow-hidden border border-ink-800/60 mb-8 lg:mb-10">
         {competitors.map((c, i) => (
           <motion.div
             key={c.name}

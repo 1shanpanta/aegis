@@ -52,9 +52,7 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => (
         transition={{ duration: 0.95, delay: 0.05, ease }}
         className="relative"
       >
-        {/* Outer glow / shader peek */}
-        <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-accent-500/30 via-transparent to-shield-500/20 opacity-50 blur-2xl pointer-events-none" />
-        <div className="relative rounded-2xl overflow-hidden border border-ink-700/80 bg-ink-900 shadow-2xl shadow-ink-950/50">
+        <div className="relative rounded-2xl overflow-hidden border border-ink-800/80 bg-ink-900">
           <div className="aspect-video w-full relative">
             {embedUrl ? (
               <iframe

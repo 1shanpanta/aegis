@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aegis · Live-on-Midnight Guide</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --ink-50:  #f5f7fa;
+    --ink-100: #e8ecf1;
+    --ink-200: #c9d2dc;
+    --ink-300: #98a3b3;
+    --ink-400: #6e7a8a;
+    --ink-500: #4c5564;
+    --ink-600: #353c47;
+    --ink-700: #232932;
+    --ink-800: #161b22;
+    --ink-900: #0d1117;
+    --ink-950: #07090d;
+    --accent-300: #93c5fd;
+    --accent-400: #60a5fa;
+    --accent-500: #3b82f6;
+    --shield-300: #6ee7b7;
+    --shield-400: #34d399;
+    --shield-500: #10b981;
+    --warn-400:   #fbbf24;
+    --warn-500:   #f59e0b;
+    --danger-400: #f87171;
+    --danger-500: #ef4444;
+
+    --sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --serif: 'Instrument Serif', ui-serif, Georgia, serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--ink-950); color: var(--ink-100); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { font-size: 15px; line-height: 1.65; }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(at 12% -10%, rgba(59,130,246,0.10), transparent 45%),
+      radial-gradient(at 88% 110%, rgba(16,185,129,0.06), transparent 50%);
+    pointer-events: none; z-index: -1;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 64px 28px 120px; }
+
+  header.hero { margin-bottom: 56px; padding-bottom: 32px; border-bottom: 1px solid rgba(35,41,50,0.7); }
+  .eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-400); margin-bottom: 16px; display: inline-flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; display: inline-block; width: 28px; height: 1px; background: var(--ink-500); }
+  h1 { font-size: clamp(2rem, 4.8vw, 3.2rem); line-height: 1.08; letter-spacing: -0.025em; margin: 0 0 18px; font-weight: 500; }
+  h1 em { font-family: var(--serif); font-style: italic; color: var(--accent-300); font-weight: 400; }
+  .lede { color: var(--ink-300); font-size: 17px; line-height: 1.6; max-width: 64ch; }
+
+  .meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; font-size: 12px; color: var(--ink-400); font-family: var(--mono); }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; background: var(--shield-400); box-shadow: 0 0 0 3px rgba(52,211,153,0.15); }
+
+  nav.toc { background: rgba(13,17,23,0.55); border: 1px solid rgba(35,41,50,0.7); border-radius: 14px; padding: 18px 22px; margin: 0 0 56px; }
+  nav.toc .eyebrow { margin-bottom: 12px; }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+  nav.toc li { font-size: 13.5px; color: var(--ink-300); }
+  nav.toc li a { color: inherit; text-decoration: none; padding: 4px 0; display: inline-flex; gap: 10px; transition: color 0.18s; }
+  nav.toc li a:hover { color: var(--ink-50); }
+  nav.toc li a span.n { font-family: var(--mono); font-size: 11px; color: var(--ink-500); width: 22px; }
+
+  section.step { padding: 56px 0; border-top: 1px solid rgba(35,41,50,0.7); }
+  section.step:first-of-type { border-top: 0; }
+  .step-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 18px; }
+  .step-num { font-family: var(--serif); font-style: italic; font-size: clamp(3rem, 6vw, 5rem); color: var(--ink-700); line-height: 0.85; user-select: none; }
+  .step-label { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--accent-300); }
+  .step-time { font-family: var(--mono); font-size: 11px; color: var(--ink-500); letter-spacing: 0.18em; text-transform: uppercase; margin-left: auto; }
+  h2 { font-size: clamp(1.5rem, 2.6vw, 1.85rem); letter-spacing: -0.02em; margin: 6px 0 14px; font-weight: 500; color: var(--ink-50); }
+  h3 { font-size: 16px; margin: 32px 0 10px; color: var(--ink-100); font-weight: 600; }
+  h4 { font-size: 13px; margin: 22px 0 6px; color: var(--ink-200); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; }
+  p { color: var(--ink-300); margin: 0 0 14px; }
+  ul, ol { color: var(--ink-300); padding-left: 20px; margin: 0 0 16px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--ink-100); font-weight: 600; }
+  em.s { font-family: var(--serif); font-style: italic; color: var(--accent-300); font-weight: 400; }
+
+  code { font-family: var(--mono); font-size: 12.5px; background: rgba(22,27,34,0.7); border: 1px solid rgba(35,41,50,0.6); padding: 1px 6px; border-radius: 5px; color: var(--ink-100); }
+  pre { background: var(--ink-900); border: 1px solid var(--ink-800); border-radius: 12px; padding: 18px 22px; margin: 14px 0 18px; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color: var(--ink-100); }
+  pre code { background: transparent; border: 0; padding: 0; font-size: inherit; }
+  pre .c { color: var(--ink-500); font-style: italic; }
+  pre .k { color: var(--accent-300); }
+  pre .s { color: var(--shield-300); }
+  pre .n { color: var(--warn-400); }
+  pre .p { color: var(--ink-200); }
+
+  a { color: var(--accent-300); text-decoration: none; border-bottom: 1px dashed rgba(96,165,250,0.4); }
+  a:hover { color: var(--accent-400); border-bottom-color: var(--accent-400); }
+
+  .callout { position: relative; padding: 14px 18px 14px 20px; margin: 18px 0 22px; border-radius: 10px; border: 1px solid var(--ink-800); background: rgba(13,17,23,0.5); font-size: 14px; }
+  .callout::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 4px; background: var(--ink-700); }
+  .callout.info::before { background: var(--accent-500); }
+  .callout.warn::before { background: var(--warn-500); }
+  .callout.danger::before { background: var(--danger-500); }
+  .callout.tip::before { background: var(--shield-500); }
+  .callout .tag { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-400); margin-bottom: 6px; }
+  .callout.info .tag { color: var(--accent-300); }
+  .callout.warn .tag { color: var(--warn-400); }
+  .callout.danger .tag { color: var(--danger-400); }
+  .callout.tip .tag { color: var(--shield-300); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { padding: 10px 12px; border-bottom: 1px solid var(--ink-800); text-align: left; vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-400); font-weight: 600; }
+  td { color: var(--ink-200); }
+  td code { font-size: 12px; }
+
+  hr { border: 0; border-top: 1px solid var(--ink-800); margin: 30px 0; }
+
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; border: 1px solid var(--ink-700); color: var(--ink-300); }
+  .pill.green { color: var(--shield-300); border-color: rgba(16,185,129,0.4); }
+  .pill.blue { color: var(--accent-300); border-color: rgba(59,130,246,0.4); }
+  .pill.warn { color: var(--warn-400); border-color: rgba(245,158,11,0.4); }
+
+  footer { margin-top: 90px; padding-top: 26px; border-top: 1px solid var(--ink-800); font-size: 12px; color: var(--ink-500); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  footer a { color: var(--ink-400); border-bottom: 1px dashed var(--ink-700); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 40px 18px 80px; }
+    nav.toc ol { grid-template-columns: 1fr; }
+    .step-num { font-size: 3rem; }
+    pre { font-size: 11.5px; padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Aegis · Engineering Guide</div>
+  <h1>Take Aegis live on <em>Midnight</em>.</h1>
+  <p class="lede">
+    The interactive simulator already runs the real Compact circuits in-browser. This guide walks
+    you the rest of the way: real wallet, real proof server, real network. Seven steps. Estimated
+    <strong>4 to 6 hours</strong> end to end the first time through.
+  </p>
+  <div class="meta">
+    <span><span class="dot"></span>Last updated 2026-05-16</span>
+    <span>~4&ndash;6 h</span>
+    <span>preprod testnet</span>
+    <span>github.com/1shanpanta/aegis</span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Table of contents">
+  <div class="eyebrow">Steps</div>
+  <ol>
+    <li><a href="#decide"><span class="n">00</span><span>Decide before you start</span></a></li>
+    <li><a href="#step-6"><span class="n">06</span><span>Install Lace Beta wallet</span></a></li>
+    <li><a href="#step-7"><span class="n">07</span><span>Fund from the preprod faucet</span></a></li>
+    <li><a href="#step-8"><span class="n">08</span><span>Run a local proof server</span></a></li>
+    <li><a href="#step-9"><span class="n">09</span><span>Wire Midnight.js into <code>web/</code></span></a></li>
+    <li><a href="#step-10"><span class="n">10</span><span>Add the Simulator &harr; Live toggle</span></a></li>
+    <li><a href="#step-11"><span class="n">11</span><span>Deploy Aegis once, pin the address</span></a></li>
+    <li><a href="#step-12"><span class="n">12</span><span>Smoke test the full loop</span></a></li>
+    <li><a href="#troubleshooting"><span class="n">99</span><span>Troubleshooting &amp; gotchas</span></a></li>
+  </ol>
+</nav>
+
+<!-- DECIDE -->
+<section class="step" id="decide">
+  <div class="step-head">
+    <div class="step-num">00</div>
+    <div>
+      <div class="step-label">Decide</div>
+      <h2>Decide before you start.</h2>
+    </div>
+    <div class="step-time">~5 min</div>
+  </div>
+
+  <p>
+    The simulator path is <strong>shipped, tested, and submission-ready</strong>. Live mode is a
+    strict upgrade in pitch power but adds five external moving parts: Lace, faucet, indexer,
+    proof server, and the preprod node. If any one stalls, you burn submission-critical hours.
+  </p>
+
+  <div class="callout warn">
+    <div class="tag">Time budget</div>
+    <p>
+      Final Devpost submission is due <strong>Sunday May 17, 11:45 AM ET</strong>. If you have
+      less than 6 hours before submission, <em class="s">stop reading this guide</em> and finish
+      Path A first (record video, deploy <code>web/</code> to Vercel, fill the Devpost form).
+      Come back here after.
+    </p>
+  </div>
+
+  <h3>What live mode actually proves</h3>
+  <ul>
+    <li>The contract really compiles and deploys to a Midnight node, not just an in-browser simulator.</li>
+    <li>A user with Lace can sign a real circuit-proof tx that updates on-chain state.</li>
+    <li>Counterparties on the chain can read the public ledger fields (state, txCount, lastTxCommitment) but cannot recover the witnesses.</li>
+  </ul>
+
+  <h3>What live mode does <em class="s">not</em> change</h3>
+  <ul>
+    <li>The Compact contract source. Same <code>aegis.compact</code> compiled the same way.</li>
+    <li>The 10 contract tests. They keep running against the simulator.</li>
+    <li>The marketing site, the hero, the comparison, the video section.</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section class="step" id="step-6">
+  <div class="step-head">
+    <div class="step-num">06</div>
+    <div>
+      <div class="step-label">Wallet</div>
+      <h2>Install <em class="s">Lace Beta</em> wallet.</h2>
+    </div>
+    <div class="step-time">~5 min</div>
+  </div>
+
+  <p>
+    Lace is the official Midnight wallet, distributed as a Chrome extension. The stable Lace
+    release does not support Midnight yet, you need the <strong>Beta</strong> channel which
+    bundles the <code>mnLace</code> dApp connector.
+  </p>
+
+  <ol>
+    <li>Open Chrome (or any Chromium browser). Firefox is not officially supported for Midnight yet.</li>
+    <li>Go to <a href="https://www.lace.io/" target="_blank" rel="noreferrer">lace.io</a> and download the <strong>Beta</strong>. Look for the small &ldquo;try Lace Beta&rdquo; link, not the stable button.</li>
+    <li>Install, create a new wallet, write the recovery phrase somewhere safe (you will throw this wallet away later, but Lace will not let you skip the step).</li>
+    <li>Open the extension, click the network selector, choose <strong>Preprod</strong>. If you don&rsquo;t see Preprod, your Lace is the stable channel, not Beta.</li>
+    <li>Find your addresses (see the click-by-click below) and copy both <strong>Unshielded</strong> (<code>mn_addr...</code>) and <strong>Shielded</strong> (<code>mn_shield-addr...</code>). The faucet needs the unshielded one.</li>
+  </ol>
+
+  <h3>Where the addresses live inside Lace</h3>
+  <p>
+    The first time you open Lace after switching to Preprod it lands on the Cardano view, not
+    Midnight. There&rsquo;s a network/asset switcher at the top of the wallet panel. Click your way
+    through this order:
+  </p>
+
+  <ol>
+    <li>Click the Lace extension icon in your toolbar to open the wallet panel.</li>
+    <li>At the top of the panel, find the <strong>asset / network switcher</strong> (looks like a small chip with the current network name, sometimes labelled <em class="s">Cardano</em>). Click it.</li>
+    <li>Pick <strong>Midnight</strong> (or <em class="s">Midnight Preprod</em>) from the dropdown. The whole wallet view re-renders for the Midnight account.</li>
+    <li>Click the <strong>Receive</strong> button (right next to <em class="s">Send</em> on the main wallet screen).</li>
+    <li>Lace shows the three Midnight addresses stacked vertically, each with a label and a copy icon:
+      <ul>
+        <li><strong>Unshielded</strong> &mdash; starts with <code>mn_addr...</code>. <em class="s">Use this one for the faucet.</em></li>
+        <li><strong>Shielded</strong> &mdash; starts with <code>mn_shield-addr...</code>. Used for private Zswap transfers.</li>
+        <li><strong>DUST</strong> &mdash; starts with <code>mn_dust...</code>. You don&rsquo;t paste this anywhere; DUST regenerates automatically from your tNIGHT balance, you can&rsquo;t send it.</li>
+      </ul>
+    </li>
+    <li>Click the <strong>copy</strong> icon next to <em class="s">Unshielded</em>. Lace flashes a checkmark when copied.</li>
+    <li>Optional: also copy the <strong>Shielded</strong> address for later (Aegis itself doesn&rsquo;t need it for the faucet, but you&rsquo;ll use it for any subsequent private transfers).</li>
+  </ol>
+
+  <div class="callout info">
+    <div class="tag">If you don&rsquo;t see a Receive button</div>
+    <p>
+      You&rsquo;re still on the Cardano view. Re-check the asset/network switcher at the top and
+      confirm it reads <em class="s">Midnight</em> (not <em class="s">Cardano</em>, not <em class="s">Cardano Preprod</em>).
+      Cardano addresses start with <code>addr1...</code> and won&rsquo;t work on the Midnight faucet.
+    </p>
+  </div>
+
+  <div class="callout tip">
+    <div class="tag">Programmatic alternative</div>
+    <p>
+      Inside the dApp once Lace is connected, you can read the addresses without opening the
+      extension UI:
+    </p>
+    <pre><code><span class="k">const</span> lace = (<span class="k">window</span> <span class="k">as any</span>).midnight.mnLace;
+<span class="k">const</span> api  = <span class="k">await</span> lace.enable();
+<span class="k">const</span> addresses = <span class="k">await</span> api.getShieldedAddresses();
+<span class="c">// addresses = { unshielded, shielded, dust }</span></code></pre>
+    <p>That snippet is how the Aegis live engine pulls the addresses on the user&rsquo;s behalf.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="tag">Why three addresses</div>
+    <p>
+      Lace exposes <strong>three</strong> addresses derived from one seed: unshielded (public
+      balance), shielded (Zswap, hides amounts and recipients), and a DUST address (non-transferable
+      fee token). The faucet drops <code>tNIGHT</code> into your unshielded address. DUST regenerates
+      automatically from your tNIGHT balance over time, like a battery from a power bank.
+    </p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="step" id="step-7">
+  <div class="step-head">
+    <div class="step-num">07</div>
+    <div>
+      <div class="step-label">Faucet</div>
+      <h2>Fund from the preprod faucet.</h2>
+    </div>
+    <div class="step-time">~5 min</div>
+  </div>
+
+  <p>
+    Midnight uses a battery model. You hold <strong>tNIGHT</strong> (test NIGHT), it generates
+    <strong>tDUST</strong> over time, and tDUST is what pays your transaction fees. You can&rsquo;t
+    transfer DUST. The first faucet drop will sit at zero DUST for 2-3 minutes while the battery
+    charges, then settle.
+  </p>
+
+  <ol>
+    <li>Open <a href="https://faucet.preprod.midnight.network/" target="_blank" rel="noreferrer">faucet.preprod.midnight.network</a>.</li>
+    <li>Paste your <strong>unshielded address</strong> (the <code>mn_addr...</code> one from Lace).</li>
+    <li>Solve the CAPTCHA, click <strong>Request tNIGHT</strong>.</li>
+    <li>Switch to Lace, refresh the balance. tNIGHT should appear within ~30 seconds. Wait ~2 minutes more for tDUST to start regenerating.</li>
+  </ol>
+
+  <div class="callout tip">
+    <div class="tag">Sanity check</div>
+    <p>
+      You&rsquo;re ready when Lace shows both a non-zero tNIGHT balance AND a small non-zero tDUST
+      balance. ~0.5 tDUST is enough for several Aegis transactions.
+    </p>
+  </div>
+
+  <div class="callout danger">
+    <div class="tag">Rate limit</div>
+    <p>
+      The faucet rate-limits per address per 24h. If you blew through your DUST and need more,
+      either wait for the battery to regen or create a fresh Lace account.
+    </p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="step" id="step-8">
+  <div class="step-head">
+    <div class="step-num">08</div>
+    <div>
+      <div class="step-label">Proof server</div>
+      <h2>Run a local proof server in Docker.</h2>
+    </div>
+    <div class="step-time">~15 min (first run downloads ZK params)</div>
+  </div>
+
+  <p>
+    Circuit proofs are <em class="s">expensive</em>. Midnight runs them outside the wallet so the
+    extension stays responsive. The official image bundles every prover key and ZK parameter file
+    Midnight needs.
+  </p>
+
+  <pre><code><span class="c"># Pull and run the proof server, exposing port 6300 to the browser.</span>
+docker run -d \
+  --name aegis-proof-server \
+  -p 6300:6300 \
+  -e PORT=6300 \
+  midnightntwrk/proof-server:8.0.3</code></pre>
+
+  <p>First run downloads ~500 MB of ZK params (cached after that). Tail the logs to confirm:</p>
+
+  <pre><code>docker logs -f aegis-proof-server</code></pre>
+
+  <p>You should see something like:</p>
+
+  <pre><code><span class="c">[INFO]</span> proof-server listening on <span class="s">0.0.0.0:6300</span>
+<span class="c">[INFO]</span> ready</code></pre>
+
+  <p>Smoke test from the host:</p>
+
+  <pre><code>curl -s -o /dev/null -w <span class="s">"%{http_code}\n"</span> http://localhost:6300/health
+<span class="c"># expect: 200</span></code></pre>
+
+  <div class="callout warn">
+    <div class="tag">First-run latency</div>
+    <p>
+      The first circuit you prove after starting the server warms up an ~80 MB working set. Expect
+      a 4-8 second pause on the very first <code>createAllowance</code> tx. Subsequent proofs are
+      sub-second on a modern Mac.
+    </p>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="step" id="step-9">
+  <div class="step-head">
+    <div class="step-num">09</div>
+    <div>
+      <div class="step-label">Wire it</div>
+      <h2>Wire Midnight.js into <code>web/</code>.</h2>
+    </div>
+    <div class="step-time">~2-3 h</div>
+  </div>
+
+  <p>
+    Today <code>web/src/lib/aegis-engine.ts</code> runs <code>AegisSimulator</code> directly. For
+    live mode we replace the simulator with the real provider stack and let Lace + the proof
+    server + the indexer carry the load.
+  </p>
+
+  <h3>Required packages</h3>
+  <p>All already installed in the root <code>package.json</code> from the bboard scaffold:</p>
+
+  <pre><code><span class="k">"@midnight-ntwrk/midnight-js-contracts"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-fetch-zk-config-provider"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-http-client-proof-provider"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-indexer-public-data-provider"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-level-private-state-provider"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-network-id"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-types"</span>
+<span class="k">"@midnight-ntwrk/midnight-js-utils"</span>
+<span class="k">"@midnight-ntwrk/dapp-connector-api"</span></code></pre>
+
+  <h3>Create <code>web/src/lib/live-providers.ts</code></h3>
+
+  <pre><code><span class="c">// SPDX-License-Identifier: Apache-2.0</span>
+<span class="c">// Provider stack for the live Midnight preprod network.</span>
+
+<span class="k">import</span> { LevelPrivateStateProvider } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-level-private-state-provider"</span>;
+<span class="k">import</span> { indexerPublicDataProvider } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-indexer-public-data-provider"</span>;
+<span class="k">import</span> { httpClientProofProvider } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-http-client-proof-provider"</span>;
+<span class="k">import</span> { FetchZkConfigProvider } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-fetch-zk-config-provider"</span>;
+<span class="k">import</span> { setNetworkId, NetworkId } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-network-id"</span>;
+<span class="k">import type</span> { MidnightProviders } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-types"</span>;
+
+<span class="k">const</span> PREPROD = {
+  indexer:   <span class="s">"https://indexer.preprod.midnight.network/api/v1/graphql"</span>,
+  indexerWS: <span class="s">"wss://indexer.preprod.midnight.network/api/v1/graphql/ws"</span>,
+  node:      <span class="s">"https://rpc.preprod.midnight.network"</span>,
+  proofUri:  <span class="s">"http://localhost:6300"</span>,
+};
+
+<span class="k">export const</span> <span class="n">PRIVATE_STATE_ID</span> = <span class="s">"aegisPrivateState"</span> <span class="k">as const</span>;
+
+<span class="k">export async function</span> <span class="n">buildLiveProviders</span>(): <span class="k">Promise</span>&lt;<span class="p">MidnightProviders</span>&gt; {
+  setNetworkId(<span class="s">"Preprod"</span> <span class="k">as</span> NetworkId);
+
+  <span class="k">const</span> lace = (<span class="k">window</span> <span class="k">as any</span>).midnight?.mnLace;
+  <span class="k">if</span> (!lace) <span class="k">throw new Error</span>(<span class="s">"Lace wallet not detected. Install Lace Beta."</span>);
+
+  <span class="k">const</span> walletApi = <span class="k">await</span> lace.enable();
+  <span class="k">const</span> uriConfig = <span class="k">await</span> lace.serviceUriConfig();
+
+  <span class="k">return</span> {
+    privateStateProvider: <span class="k">new</span> LevelPrivateStateProvider({ databaseName: <span class="s">"aegis-private-state"</span> }),
+    publicDataProvider:   indexerPublicDataProvider(
+                            uriConfig.indexerUri   ?? PREPROD.indexer,
+                            uriConfig.indexerWsUri ?? PREPROD.indexerWS
+                          ),
+    zkConfigProvider:     <span class="k">new</span> FetchZkConfigProvider(<span class="k">window</span>.location.origin),
+    proofProvider:        httpClientProofProvider(PREPROD.proofUri),
+    walletProvider:       walletApi,
+    midnightProvider:     walletApi,
+  };
+}</code></pre>
+
+  <h3>Create <code>web/src/lib/live-engine.ts</code></h3>
+
+  <pre><code><span class="c">// SPDX-License-Identifier: Apache-2.0</span>
+<span class="k">import</span> { deployContract, findDeployedContract } <span class="k">from</span> <span class="s">"@midnight-ntwrk/midnight-js-contracts"</span>;
+<span class="k">import</span> { combineLatest, from, type Observable } <span class="k">from</span> <span class="s">"rxjs"</span>;
+<span class="k">import</span> { map } <span class="k">from</span> <span class="s">"rxjs/operators"</span>;
+<span class="k">import</span> {
+  CompiledAegisContractContract,
+  createAegisPrivateState,
+  ledger,
+  type AegisPrivateState,
+  type Ledger,
+} <span class="k">from</span> <span class="s">"@aegis/contract"</span>;
+<span class="k">import</span> { buildLiveProviders, PRIVATE_STATE_ID } <span class="k">from</span> <span class="s">"./live-providers"</span>;
+
+<span class="k">export async function</span> <span class="n">deployAegisOnChain</span>(initial: <span class="p">AegisPrivateState</span>) {
+  <span class="k">const</span> providers = <span class="k">await</span> buildLiveProviders();
+  <span class="k">const</span> deployed = <span class="k">await</span> deployContract(providers, {
+    contract:            CompiledAegisContractContract,
+    privateStateId:      PRIVATE_STATE_ID,
+    initialPrivateState: initial,
+  });
+  <span class="k">return</span> { providers, deployed };
+}
+
+<span class="k">export async function</span> <span class="n">joinAegisOnChain</span>(address: <span class="k">string</span>, initial: <span class="p">AegisPrivateState</span>) {
+  <span class="k">const</span> providers = <span class="k">await</span> buildLiveProviders();
+  <span class="k">const</span> deployed = <span class="k">await</span> findDeployedContract(providers, {
+    contractAddress:     address,
+    contract:            CompiledAegisContractContract,
+    privateStateId:      PRIVATE_STATE_ID,
+    initialPrivateState: initial,
+  });
+  <span class="k">return</span> { providers, deployed };
+}
+
+<span class="k">export function</span> <span class="n">aegisState$</span>(providers: <span class="p">any</span>, address: <span class="k">string</span>) {
+  <span class="k">return</span> combineLatest([
+    providers.publicDataProvider
+      .contractStateObservable(address, { type: <span class="s">"latest"</span> })
+      .pipe(map((s: <span class="p">any</span>) => ledger(s.data))),
+    <span class="k">from</span>(providers.privateStateProvider.get(PRIVATE_STATE_ID))
+      .pipe(map((p) => p <span class="k">as</span> <span class="p">AegisPrivateState</span>)),
+  ]).pipe(map(([pub, priv]) =&gt; ({ public: pub <span class="k">as</span> <span class="p">Ledger</span>, private: priv })));
+}</code></pre>
+
+  <h3>Update <code>web/src/lib/aegis-engine.ts</code></h3>
+
+  <p>Add a <code>mode</code> field to the engine. When <code>mode === "live"</code>, route <code>createAllowance</code>, <code>spend</code>, and <code>revoke</code> calls through <code>deployed.callTx.*</code> instead of the simulator. Subscribe the React store to <code>aegisState$</code> instead of the simulator's snapshot.</p>
+
+  <pre><code><span class="c">// Pseudocode for the routing layer inside the engine.</span>
+
+<span class="k">if</span> (mode === <span class="s">"live"</span>) {
+  <span class="k">await</span> deployed.callTx.createAllowance(principalPk, agentPk);
+} <span class="k">else</span> {
+  simulator.createAllowance();
+}
+
+<span class="k">if</span> (mode === <span class="s">"live"</span>) {
+  <span class="k">await</span> deployed.callTx.executeAgentTx(amount, counterparty.address, nonce);
+} <span class="k">else</span> {
+  simulator.executeAgentTx(amount, counterparty.address, nonce);
+}</code></pre>
+
+  <div class="callout info">
+    <div class="tag">State subscription</div>
+    <p>
+      The simulator returns ledger state synchronously after each call. Live mode is async, the
+      tx hits the mempool, then a block, then the indexer. Wrap UI updates in <em class="s">optimistic</em>
+      state plus a <code>pending</code> badge that clears once <code>aegisState$</code> emits a
+      matching <code>txCount</code>.
+    </p>
+  </div>
+
+  <h3>Witness state in the LevelDB store</h3>
+  <p>
+    The simulator holds private state in memory. Live mode persists it in <code>LevelPrivateStateProvider</code>,
+    which is an IndexedDB-backed key/value store keyed by your <code>PRIVATE_STATE_ID</code> (<code>"aegisPrivateState"</code>).
+    The principal&rsquo;s machine and the agent&rsquo;s machine each have their own LevelDB &mdash; private state never crosses the network.
+  </p>
+</section>
+
+<!-- 10 -->
+<section class="step" id="step-10">
+  <div class="step-head">
+    <div class="step-num">10</div>
+    <div>
+      <div class="step-label">Toggle</div>
+      <h2>Add the <em class="s">Simulator &harr; Live</em> toggle.</h2>
+    </div>
+    <div class="step-time">~30 min</div>
+  </div>
+
+  <p>
+    Judges without Lace need the simulator to keep working. Hide live behind a toggle that
+    persists in localStorage and reflects in the URL (<code>?mode=live</code>).
+  </p>
+
+  <pre><code><span class="c">// web/src/lib/use-mode.ts</span>
+<span class="k">import</span> { useEffect, useState } <span class="k">from</span> <span class="s">"react"</span>;
+
+<span class="k">export type</span> Mode = <span class="s">"simulator"</span> | <span class="s">"live"</span>;
+
+<span class="k">export function</span> <span class="n">useMode</span>(): [Mode, (m: Mode) =&gt; <span class="k">void</span>] {
+  <span class="k">const</span> [mode, setMode] = useState&lt;Mode&gt;(() =&gt; {
+    <span class="k">if</span> (<span class="k">typeof window</span> === <span class="s">"undefined"</span>) <span class="k">return</span> <span class="s">"simulator"</span>;
+    <span class="k">const</span> qs = <span class="k">new</span> URLSearchParams(<span class="k">window</span>.location.search);
+    <span class="k">if</span> (qs.get(<span class="s">"mode"</span>) === <span class="s">"live"</span>) <span class="k">return</span> <span class="s">"live"</span>;
+    <span class="k">return</span> (localStorage.getItem(<span class="s">"aegis:mode"</span>) <span class="k">as</span> Mode) ?? <span class="s">"simulator"</span>;
+  });
+
+  useEffect(() =&gt; {
+    localStorage.setItem(<span class="s">"aegis:mode"</span>, mode);
+    <span class="k">const</span> qs = <span class="k">new</span> URLSearchParams(<span class="k">window</span>.location.search);
+    qs.set(<span class="s">"mode"</span>, mode);
+    <span class="k">window</span>.history.replaceState({}, <span class="s">""</span>, <span class="s">"?"</span> + qs.toString());
+  }, [mode]);
+
+  <span class="k">return</span> [mode, setMode];
+}</code></pre>
+
+  <p>UI: add a small pill toggle to the top bar in <code>Hero.tsx</code> and the demo section.</p>
+
+  <pre><code>&lt;<span class="k">div</span> <span class="p">className</span>=<span class="s">"flex items-center gap-1 rounded-full border border-ink-700 p-0.5"</span>&gt;
+  &lt;<span class="k">button</span> <span class="p">onClick</span>={() =&gt; setMode(<span class="s">"simulator"</span>)}
+          <span class="p">className</span>={mode === <span class="s">"simulator"</span> ? <span class="s">"active"</span> : <span class="s">""</span>}&gt;
+    Simulator
+  &lt;/<span class="k">button</span>&gt;
+  &lt;<span class="k">button</span> <span class="p">onClick</span>={() =&gt; setMode(<span class="s">"live"</span>)}
+          <span class="p">disabled</span>={!isLaceAvailable()}&gt;
+    Live <span class="s">·</span> preprod
+  &lt;/<span class="k">button</span>&gt;
+&lt;/<span class="k">div</span>&gt;</code></pre>
+
+  <div class="callout tip">
+    <div class="tag">Disabled state</div>
+    <p>
+      If Lace isn&rsquo;t installed, gray out the Live button and show a tiny tooltip linking to
+      <code>lace.io</code>. The simulator stays selectable.
+    </p>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="step" id="step-11">
+  <div class="step-head">
+    <div class="step-num">11</div>
+    <div>
+      <div class="step-label">Deploy</div>
+      <h2>Deploy Aegis once, pin the address.</h2>
+    </div>
+    <div class="step-time">~10 min (after step 9 ships)</div>
+  </div>
+
+  <p>
+    Each new <code>deployContract</code> call creates a fresh Aegis instance on chain. For the
+    public demo we want <strong>one canonical instance</strong> that judges can join, so the
+    demo doesn&rsquo;t require everyone to spin up their own.
+  </p>
+
+  <ol>
+    <li>Run the dev server with <code>?mode=live</code>.</li>
+    <li>Connect Lace, confirm you&rsquo;re on Preprod.</li>
+    <li>Click <strong>Create allowance</strong>. Lace pops up to sign; the proof server takes a few seconds.</li>
+    <li>Watch the dev tools network tab. When the tx finalizes, the indexer subscription emits a new ledger state with <code>state: ACTIVE</code>.</li>
+    <li>Copy the contract address from the UI (the engine should surface <code>deployed.deployTxData.public.contractAddress</code>).</li>
+    <li>Set it as the default in <code>web/src/lib/live-engine.ts</code>:
+      <pre><code><span class="k">export const</span> <span class="n">AEGIS_PREPROD_ADDRESS</span> = <span class="s">"0200deadbeef..."</span>;</code></pre>
+    </li>
+    <li>When the live page loads with no contract address in the URL, default to <code>joinAegisOnChain(AEGIS_PREPROD_ADDRESS, ...)</code> instead of a fresh deploy.</li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="tag">Witness fork warning</div>
+    <p>
+      The pinned contract&rsquo;s witnesses (cap, whitelist) are owned by whoever deployed it.
+      Anyone who joins it as the agent must agree on those witness values, or their proofs
+      reject. For the demo, the deployer&rsquo;s spend cap should be generous (say $100 / week)
+      and the whitelist should include the canonical demo counterparties already hardcoded.
+    </p>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="step" id="step-12">
+  <div class="step-head">
+    <div class="step-num">12</div>
+    <div>
+      <div class="step-label">Smoke test</div>
+      <h2>Test the full loop.</h2>
+    </div>
+    <div class="step-time">~30 min</div>
+  </div>
+
+  <p>The end-to-end flow you&rsquo;re proving:</p>
+
+  <table>
+    <thead><tr><th style="width: 22%">Stage</th><th>What happens</th><th style="width: 16%">Expected</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Open page</td>
+        <td><code>?mode=live</code>, Lace detected, engine builds providers, indexer subscription opens.</td>
+        <td><span class="pill green">200 OK</span></td>
+      </tr>
+      <tr>
+        <td>Connect wallet</td>
+        <td>Lace popup &rarr; user clicks Connect.</td>
+        <td><span class="pill green">accepted</span></td>
+      </tr>
+      <tr>
+        <td>Create allowance</td>
+        <td>Witnesses initialized in LevelDB, Compact circuit produces a proof at the local proof server, tx broadcasts to preprod.</td>
+        <td><span class="pill blue">pending</span> &rarr; <span class="pill green">finalized</span></td>
+      </tr>
+      <tr>
+        <td>Indexer catches up</td>
+        <td>Public ledger state updates: <code>state = ACTIVE</code>, <code>principalPk</code>, <code>agentPk</code>.</td>
+        <td><span class="pill green">visible</span></td>
+      </tr>
+      <tr>
+        <td>Execute agent tx</td>
+        <td>Agent click &rarr; circuit proves <code>amount + spend &le; limit</code> &amp; counterparty whitelisted &rarr; commitment emitted.</td>
+        <td><span class="pill green">accepted</span></td>
+      </tr>
+      <tr>
+        <td>Over-cap attack</td>
+        <td>Drain attempt; circuit fails assert.</td>
+        <td><span class="pill warn">circuit reject</span></td>
+      </tr>
+      <tr>
+        <td>Off-whitelist attack</td>
+        <td>Spend to Tornado address; circuit fails assert.</td>
+        <td><span class="pill warn">circuit reject</span></td>
+      </tr>
+      <tr>
+        <td>Revoke</td>
+        <td>Principal clicks revoke; state flips to <code>REVOKED</code> on the public ledger.</td>
+        <td><span class="pill green">visible</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>For each step:</p>
+
+  <ol>
+    <li>Watch Lace for prompts. Each tx asks for confirmation.</li>
+    <li>Watch the Docker logs: <code>docker logs -f aegis-proof-server</code>. You should see a proof request per circuit call.</li>
+    <li>Watch the dev tools <strong>Network</strong> tab. The GraphQL subscription should push state updates.</li>
+    <li>Confirm the public-pane in the UI shows the new <code>txCount</code> and <code>lastTxCommitment</code> within ~10 seconds of finalization.</li>
+  </ol>
+
+  <h3>Demo recording bonus shot</h3>
+  <p>
+    Once live mode works, re-record the last 20 seconds of the demo video showing the <em class="s">real</em>
+    Lace popup and the <em class="s">real</em> preprod chain explorer reflecting your tx. This is
+    a differentiator vs every other simulator-only submission.
+  </p>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section class="step" id="troubleshooting">
+  <div class="step-head">
+    <div class="step-num">99</div>
+    <div>
+      <div class="step-label">Troubleshooting</div>
+      <h2>When something breaks.</h2>
+    </div>
+    <div class="step-time">&mdash;</div>
+  </div>
+
+  <h3><code>window.midnight.mnLace</code> is undefined</h3>
+  <ul>
+    <li>Lace not installed, or stable Lace (not Beta). Reinstall the Beta channel.</li>
+    <li>Lace is asleep; click the extension icon to wake it.</li>
+    <li>You&rsquo;re on Firefox or Safari. Use Chromium.</li>
+  </ul>
+
+  <h3>Proof server times out</h3>
+  <ul>
+    <li>Verify <code>docker ps</code> shows the container running.</li>
+    <li><code>curl -v http://localhost:6300/health</code> should return 200.</li>
+    <li>If first run, ZK params still downloading (~500 MB). Watch <code>docker logs</code>.</li>
+    <li>If your browser CORS blocks <code>localhost:6300</code>, run dev with HTTPS or proxy through Vite.</li>
+  </ul>
+
+  <h3>Indexer subscription disconnects</h3>
+  <ul>
+    <li>Preprod indexer occasionally hangs. The provider will reconnect; UI should retry the subscription on disconnect.</li>
+    <li>Hard-refresh the page to rebuild the providers.</li>
+  </ul>
+
+  <h3>Tx rejected: <em class="s">insufficient DUST</em></h3>
+  <ul>
+    <li>Wait 60 seconds for the battery to regen.</li>
+    <li>If still empty, faucet a fresh address.</li>
+  </ul>
+
+  <h3>Tx rejected: <em class="s">assertion failed</em> at the proof server</h3>
+  <ul>
+    <li>One of your witnesses doesn&rsquo;t match. The most common case: the agent&rsquo;s LevelDB has different <code>allowanceLimit</code> or <code>whitelist</code> than the principal&rsquo;s. Reset both LevelDBs with the same initial state.</li>
+    <li>Check the proof server logs for the specific <code>failed assert</code> message.</li>
+  </ul>
+
+  <h3>Browser bundle exceeds 10MB after wiring</h3>
+  <ul>
+    <li>Midnight ledger WASM is 10MB. This is expected. Vite already chunks it separately, gzipped is ~4.7MB.</li>
+    <li>For Vercel deploy: ensure your output directory is set to <code>web/dist</code>.</li>
+  </ul>
+
+  <hr />
+
+  <h3>If everything just refuses to work</h3>
+  <p>
+    The simulator submission is already <em class="s">enough to win</em>. Ship Path A and treat
+    live mode as a v1.1 milestone. The 10 passing contract tests prove the privacy primitive
+    holds, and the in-browser demo proves the contract code executes correctly. Live mode is
+    upside, not floor.
+  </p>
+</section>
+
+<footer>
+  <span>Aegis &middot; live-on-Midnight guide &middot; 2026-05-16</span>
+  <span><a href="https://github.com/1shanpanta/aegis">github.com/1shanpanta/aegis</a> &middot; <a href="https://docs.midnight.network/">docs.midnight.network</a></span>
+</footer>
+
+</div>
+</body>
+</html>

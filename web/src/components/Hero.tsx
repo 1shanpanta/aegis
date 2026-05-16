@@ -3,11 +3,12 @@ import { motion } from "framer-motion";
 import { ArrowRight, Github, Shield } from "lucide-react";
 import { Shader } from "./Shader";
 import { UtcClock, PulseDot } from "./LiveChrome";
+import { AuthButton } from "./AuthButton";
 
 const ease = [0.2, 0.7, 0.2, 1] as const;
 
 export const Hero = () => (
-  <section className="relative isolate h-[100svh] min-h-[680px] w-full overflow-hidden">
+  <section className="relative isolate h-[100svh] min-h-[680px] w-full overflow-hidden flex flex-col">
     <Shader />
     {/* Subtle dark gradient so text stays readable over the shader */}
     <div
@@ -16,7 +17,7 @@ export const Hero = () => (
     />
 
     {/* Top bar — brand + live chrome */}
-    <div className="relative z-10 flex items-center justify-between px-6 lg:px-10 pt-6">
+    <div className="relative z-10 flex items-center justify-between px-6 lg:px-10 pt-6 shrink-0">
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -33,23 +34,26 @@ export const Hero = () => (
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.08, ease }}
-        className="flex items-center gap-3 rounded-full bg-ink-900/50 border border-ink-700/60 backdrop-blur-md px-3.5 py-1.5"
+        className="flex items-center gap-2.5"
       >
-        <span className="flex items-center gap-1.5 text-[11px] text-ink-200">
-          <PulseDot tone="shield" />
-          on Midnight
-        </span>
-        <span className="text-ink-700">|</span>
-        <UtcClock />
-        <span className="text-ink-700 hidden sm:inline">|</span>
-        <span className="hidden sm:inline font-mono text-[11px] text-shield-300 tabular-nums">
-          10/10 tests
-        </span>
+        <div className="flex items-center gap-3 rounded-full bg-ink-900/50 border border-ink-700/60 backdrop-blur-md px-3.5 py-1.5">
+          <span className="flex items-center gap-1.5 text-[11px] text-ink-200">
+            <PulseDot tone="shield" />
+            on Midnight
+          </span>
+          <span className="text-ink-700">|</span>
+          <UtcClock />
+          <span className="text-ink-700 hidden sm:inline">|</span>
+          <span className="hidden sm:inline font-mono text-[11px] text-shield-300 tabular-nums">
+            10/10 tests
+          </span>
+        </div>
+        <AuthButton />
       </motion.div>
     </div>
 
-    {/* Centerpiece — headline, body, CTAs */}
-    <div className="relative z-10 mx-auto max-w-4xl px-6 pt-24 sm:pt-28 lg:pt-32">
+    {/* Centerpiece — vertically centered in remaining flex space */}
+    <div className="relative z-10 mx-auto max-w-4xl px-6 flex-1 flex flex-col justify-center pb-16">
       <motion.h1
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
@@ -101,8 +105,9 @@ export const Hero = () => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.4, delay: 0.7, ease }}
-        className="mt-12 text-[11px] uppercase tracking-[0.2em] text-ink-500"
+        className="mt-10 flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-ink-300"
       >
+        <span className="inline-block w-8 h-px bg-ink-500" />
         Submission · Midnight Hackathon · May 2026 · AI Track
       </motion.div>
     </div>

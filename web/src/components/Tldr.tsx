@@ -19,7 +19,7 @@ export const Tldr = () => (
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease }}
-        className="rounded-2xl border border-ink-800/70 bg-ink-900/40 backdrop-blur-sm shadow-[0_30px_80px_-40px_rgba(0,0,0,0.6)] p-8 lg:p-12"
+        className="rounded-2xl border border-ink-800/70 bg-ink-900/40 backdrop-blur-sm p-8 lg:p-12"
       >
         <div className="text-[11px] uppercase tracking-[0.22em] text-ink-500 mb-5">TL;DR</div>
 

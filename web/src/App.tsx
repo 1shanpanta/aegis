@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { RefreshCw, Sparkles } from "lucide-react";
 import { Hero } from "./components/Hero";
 import { HowItWorks } from "./components/HowItWorks";
+import { DemoVideo } from "./components/DemoVideo";
 import { Comparison } from "./components/Comparison";
 import { PrincipalView } from "./components/PrincipalView";
 import { AgentView } from "./components/AgentView";
@@ -21,6 +22,12 @@ const App = () => {
       <Hero />
 
       <HowItWorks />
+
+      <DemoVideo
+        embedUrl={import.meta.env.VITE_DEMO_EMBED_URL as string | undefined}
+        videoSrc={import.meta.env.VITE_DEMO_VIDEO_URL as string | undefined}
+        poster={import.meta.env.VITE_DEMO_POSTER_URL as string | undefined}
+      />
 
       <Comparison />
 

@@ -75,7 +75,7 @@ git clone <repo>
 cd aegis
 npm install
 npm --workspace @aegis/contract run build
-npm --workspace @aegis/ui run dev
+npm --workspace @aegis/web run dev
 # open http://localhost:5173
 ```
 

@@ -1,0 +1,139 @@
+// SPDX-License-Identifier: Apache-2.0
+import { useAegis, AllowanceState } from "../lib/aegis-engine";
+import { Card, CardHeader, CardBody, CardSection } from "./ui/Card";
+import { Button } from "./ui/Button";
+import { Badge, Dot } from "./ui/Badge";
+import { shortHex } from "../lib/utils";
+
+const stateBadge: Record<
+  AllowanceState,
+  { label: string; tone: "neutral" | "active" | "muted" }
+> = {
+  [AllowanceState.UNINITIALIZED]: { label: "idle", tone: "muted" },
+  [AllowanceState.ACTIVE]: { label: "active", tone: "active" },
+  [AllowanceState.REVOKED]: { label: "revoked", tone: "muted" },
+};
+
+export const PrincipalView = () => {
+  const { state, createAllowance, revoke, formatAmount } = useAegis();
+  const { ledger, privateState, auditLog, counterparties } = state;
+  const remaining = privateState.allowanceLimit - privateState.spendSoFar;
+  const pct =
+    Number((privateState.spendSoFar * 1000n) / (privateState.allowanceLimit || 1n)) / 10;
+  const whitelisted = counterparties.filter((c) => c.whitelisted);
+  const badge = stateBadge[ledger.state];
+
+  return (
+    <Card>
+      <CardHeader
+        title="Principal"
+        subtitle="The human delegator. Holds the witness keys."
+        trailing={<Badge tone={badge.tone}>{badge.label}</Badge>}
+      />
+
+      <CardBody className="space-y-0">
+        <CardSection>
+          <div className="flex items-baseline gap-2.5">
+            <div className="text-[36px] tracking-tight text-ink-50 font-medium font-mono tabular-nums">
+              {formatAmount(privateState.allowanceLimit)}
+            </div>
+            <div className="text-[12px] text-ink-500">shielded cap</div>
+          </div>
+          <div className="mt-4 h-[2px] bg-ink-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-accent-400 transition-all duration-500"
+              style={{ width: `${Math.min(pct, 100)}%` }}
+            />
+          </div>
+          <div className="mt-2.5 flex items-center justify-between text-[12px] font-mono tabular-nums">
+            <span className="text-ink-500">
+              spent <span className="text-ink-200">{formatAmount(privateState.spendSoFar)}</span>
+            </span>
+            <span className="text-ink-500">
+              remaining <span className="text-accent-300">{formatAmount(remaining)}</span>
+            </span>
+          </div>
+        </CardSection>
+
+        <CardSection label="Whitelist · 3 counterparties">
+          <ul className="space-y-1">
+            {whitelisted.map((c) => (
+              <li
+                key={c.id}
+                className="flex items-center justify-between py-2 text-[13px]"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Dot tone="active" />
+                  <span className="text-ink-100">{c.label}</span>
+                </div>
+                <span className="font-mono text-[11px] text-ink-500">
+                  {shortHex(c.address)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </CardSection>
+
+        <CardSection label="Audit log">
+          {auditLog.length === 0 ? (
+            <div className="text-[13px] text-ink-500 italic py-2">
+              Agent has not transacted yet.
+            </div>
+          ) : (
+            <ul className="space-y-1.5 max-h-[180px] overflow-y-auto pr-1">
+              {auditLog.map((entry, i) => {
+                const cp = counterparties.find(
+                  (c) => shortHex(c.address) === shortHex(entry.counterparty),
+                );
+                return (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between text-[13px] py-1"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-mono text-[11px] text-ink-600 w-5">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-mono text-ink-100 tabular-nums">
+                        {formatAmount(entry.amount)}
+                      </span>
+                      <span className="text-ink-600">→</span>
+                      <span className="text-ink-200">
+                        {cp?.label ?? shortHex(entry.counterparty)}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[10px] text-ink-600 tabular-nums">
+                      {new Date(entry.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </CardSection>
+
+        <div className="pt-6 mt-1 border-t border-ink-800/60">
+          {ledger.state === AllowanceState.UNINITIALIZED && (
+            <Button variant="primary" onClick={createAllowance} className="w-full">
+              Create allowance
+            </Button>
+          )}
+          {ledger.state === AllowanceState.ACTIVE && (
+            <Button variant="secondary" onClick={revoke} className="w-full">
+              Revoke allowance
+            </Button>
+          )}
+          {ledger.state === AllowanceState.REVOKED && (
+            <div className="text-center text-[12px] text-ink-500 py-1">
+              Allowance revoked. Reset to create a new one.
+            </div>
+          )}
+        </div>
+      </CardBody>
+    </Card>
+  );
+};

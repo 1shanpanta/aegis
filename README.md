@@ -35,7 +35,7 @@ git clone <this repo>
 cd aegis
 npm install
 npm --workspace @aegis/contract run build
-npm --workspace @aegis/ui run dev
+npm --workspace @aegis/web run dev
 # open http://localhost:5173
 ```
 
@@ -57,7 +57,7 @@ aegis/
 │       ├── witnesses.ts     Client-side private state + witness implementations
 │       ├── aegis-simulator.ts In-browser harness used by both tests and UI
 │       └── test/aegis.test.ts 10 passing tests covering all reject paths
-├── aegis-ui/                React 19 + Tailwind 4 + framer-motion demo
+├── web/                React 19 + Tailwind 4 + framer-motion demo
 └── api/                     Reserved for live-network mode (Lace wallet + proof server)
 ```
 

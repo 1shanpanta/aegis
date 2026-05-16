@@ -24,8 +24,8 @@ const useCases = [
 ];
 
 export const Tldr = () => (
-  <section id="tldr" className="relative w-full px-6 lg:px-10 py-16 lg:py-20 scroll-mt-12">
-    <div className="mx-auto max-w-5xl">
+  <section className="relative w-full px-6 lg:px-10 py-16 lg:py-20">
+    <div id="tldr" className="mx-auto max-w-5xl scroll-mt-20">
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}

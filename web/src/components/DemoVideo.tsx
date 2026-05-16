@@ -67,7 +67,7 @@ const normalizeVideoUrl = (raw: string | undefined): string | undefined => {
 export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
   const resolvedEmbed = normalizeVideoUrl(embedUrl);
   return (
-  <section id="demo-video" className="relative w-full px-6 lg:px-10 py-32 lg:py-44 overflow-hidden isolate scroll-mt-12">
+  <section className="relative w-full px-6 lg:px-10 py-32 lg:py-44 overflow-hidden isolate">
     {/* Atmospheric shader behind the video frame. Heavily faded so the
         frame itself reads as glass-over-busy per design.md ingredient #3. */}
     <div
@@ -84,7 +84,7 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ink-950/60 via-transparent to-ink-950/90" />
     </div>
-    <div className="mx-auto max-w-6xl">
+    <div id="demo-video" className="mx-auto max-w-6xl scroll-mt-20">
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}

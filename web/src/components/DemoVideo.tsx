@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { motion } from "framer-motion";
-import { Play, Clock } from "lucide-react";
+import { Play } from "lucide-react";
 import { Shader } from "./Shader";
 
 const ease = [0.2, 0.7, 0.2, 1] as const;
@@ -101,12 +101,6 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
             <span className="font-serif italic text-accent-300">Three views</span> of the same
             chain state.
           </h2>
-        </div>
-        <div className="flex items-center gap-2 text-[11px] text-ink-400 font-mono">
-          <Clock className="w-3.5 h-3.5" />
-          <span>02:00</span>
-          <span className="text-ink-700">·</span>
-          <span className="uppercase tracking-[0.18em]">1440p</span>
         </div>
       </motion.div>
 

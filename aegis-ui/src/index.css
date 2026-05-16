@@ -29,6 +29,7 @@
   --color-danger-500: #ef4444;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, "Iowan Old Style", "Apple Garamond", serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
 }
 
@@ -41,10 +42,8 @@ html, body, #root {
   -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background-image:
-    radial-gradient(at 12% -10%, color-mix(in oklab, var(--color-accent-500) 15%, transparent), transparent 45%),
-    radial-gradient(at 88% 110%, color-mix(in oklab, var(--color-shield-500) 10%, transparent), transparent 50%);
+#root {
+  isolation: isolate;
 }
 
 ::selection {
@@ -60,9 +59,51 @@ body {
 }
 
 @font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/instrumentserif/v17/jizDREVItHgc8qDIbSTKq4XIRRMC0FNGAa6Ld22YbI.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/instrumentserif/v17/jizAREVItHgc8qDIbSTKq4XIRRMC1WUR.woff2") format("woff2");
+}
+
+@font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
   src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2") format("woff2");
+}
+
+/* Smooth scrolling for anchor CTAs */
+html {
+  scroll-behavior: smooth;
+}
+
+/* The hero is over a shader, anchor underline tweak */
+a {
+  text-underline-offset: 3px;
+}
+
+/* Pulse dot animation */
+@keyframes aegis-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
+}
+
+.pulse-dot {
+  animation: aegis-pulse 2s ease-in-out infinite;
+}
+
+/* Reduce motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pulse-dot { animation: none; }
 }

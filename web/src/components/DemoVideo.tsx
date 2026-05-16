@@ -75,8 +75,14 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
       className="absolute inset-0 -z-10 pointer-events-none opacity-30"
     >
       <Shader />
-      <div className="absolute inset-0 bg-gradient-radial-to-tr from-transparent via-ink-950/70 to-ink-950" />
-      <div className="absolute inset-0 bg-gradient-to-b from-ink-950/40 via-transparent to-ink-950/80" />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 0%, rgba(7,9,13,0.55) 50%, rgba(7,9,13,0.95) 100%)",
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-950/60 via-transparent to-ink-950/90" />
     </div>
     <div className="mx-auto max-w-6xl">
       <motion.div

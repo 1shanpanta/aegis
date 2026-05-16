@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { RefreshCw, Sparkles } from "lucide-react";
 import { Hero } from "./components/Hero";
+import { Tldr } from "./components/Tldr";
 import { HowItWorks } from "./components/HowItWorks";
 import { DemoVideo } from "./components/DemoVideo";
 import { Comparison } from "./components/Comparison";
@@ -10,8 +11,8 @@ import { AgentView } from "./components/AgentView";
 import { PublicView } from "./components/PublicView";
 import { EventLog } from "./components/EventLog";
 import { useAegis } from "./lib/aegis-engine";
-import { PulseDot } from "./components/LiveChrome";
 import { ModeToggle } from "./components/ModeToggle";
+import { Shader } from "./components/Shader";
 
 const ease = [0.2, 0.7, 0.2, 1] as const;
 
@@ -21,6 +22,8 @@ const App = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Hero />
+
+      <Tldr />
 
       <HowItWorks />
 
@@ -34,8 +37,16 @@ const App = () => {
 
       <section
         id="demo"
-        className="relative w-full px-6 lg:px-10 py-24 lg:py-28 border-t border-ink-800/80"
+        className="relative w-full px-6 lg:px-10 py-24 lg:py-28 overflow-hidden isolate"
       >
+        {/* Atmospheric shader behind the header, fades to ink by the cards. */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-[55%] -z-10 pointer-events-none opacity-50"
+        >
+          <Shader />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/50 via-ink-950/70 to-ink-950" />
+        </div>
         <div className="mx-auto max-w-[1400px]">
           <motion.div
             initial={{ opacity: 0, y: 14 }}

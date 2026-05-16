@@ -137,7 +137,7 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
           </div>
         </div>
 
-        <div className="mt-5 flex items-center justify-between text-[12px] text-ink-500">
+        <div className="mt-5 text-[12px] text-ink-500">
           <span>
             Built solo for the{" "}
             <a
@@ -150,7 +150,6 @@ export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
             </a>
             .
           </span>
-          <span className="font-mono tabular-nums">aegis.demo.v1</span>
         </div>
       </motion.div>
     </div>

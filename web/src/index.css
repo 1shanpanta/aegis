@@ -44,6 +44,10 @@ html, body, #root {
   text-rendering: optimizeLegibility;
 }
 
+/* The global ambient shader sits behind everything. The sections need a
+   transparent bg so the shader peeks through; the page itself stays ink-950. */
+body { background-color: var(--color-ink-950); }
+
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
 

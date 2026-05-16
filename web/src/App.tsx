@@ -23,8 +23,6 @@ const App = () => {
     <div className="min-h-screen flex flex-col">
       <Hero />
 
-      <Tldr />
-
       <HowItWorks />
 
       <DemoVideo

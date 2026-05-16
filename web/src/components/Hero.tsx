@@ -43,10 +43,6 @@ export const Hero = () => (
           </span>
           <span className="text-ink-700">|</span>
           <UtcClock />
-          <span className="text-ink-700 hidden sm:inline">|</span>
-          <span className="hidden sm:inline font-mono text-[11px] text-shield-300 tabular-nums">
-            10/10 tests
-          </span>
         </div>
         <AuthButton />
       </motion.div>

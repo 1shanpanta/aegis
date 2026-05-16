@@ -2,16 +2,29 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils";
 
+/**
+ * Concentric border-radius scale used throughout the demo cards:
+ *
+ *   outer (Card)     → rounded-2xl  (16px)
+ *   section interior → rounded-lg   (8px)   (with 8-12px inner padding)
+ *   pill / chip      → rounded-md   (6px)
+ */
 export const Card = ({
   className,
   children,
+  active = false,
   ...props
-}: HTMLAttributes<HTMLDivElement>) => (
+}: HTMLAttributes<HTMLDivElement> & { active?: boolean }) => (
   <div
     className={cn(
-      "relative rounded-2xl border border-ink-800/70 bg-ink-900/40 backdrop-blur-sm overflow-hidden",
+      "relative rounded-2xl border bg-ink-900/40 backdrop-blur-sm overflow-hidden",
+      "transition-colors duration-300",
+      active
+        ? "border-accent-500/30 shadow-[0_0_0_1px_rgba(59,130,246,0.06),0_30px_60px_-30px_rgba(59,130,246,0.18)]"
+        : "border-ink-800/70 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]",
       className,
     )}
+    style={{ transitionProperty: "border-color, box-shadow" }}
     {...props}
   >
     {children}
@@ -31,7 +44,12 @@ export const CardHeader = ({
     <div>
       <div className="text-[10px] uppercase tracking-[0.22em] text-ink-500 mb-2">{title}</div>
       {subtitle && (
-        <div className="text-[15px] text-ink-200 leading-snug max-w-[28ch]">{subtitle}</div>
+        <div
+          className="text-[15px] text-ink-200 leading-snug max-w-[28ch]"
+          style={{ textWrap: "balance" } as React.CSSProperties}
+        >
+          {subtitle}
+        </div>
       )}
     </div>
     {trailing && <div className="shrink-0 mt-1">{trailing}</div>}
@@ -55,7 +73,12 @@ export const CardSection = ({
   children: ReactNode;
   className?: string;
 }) => (
-  <div className={cn("py-5 first:pt-0 last:pb-0 border-t border-ink-800/60 first:border-t-0", className)}>
+  <div
+    className={cn(
+      "py-5 first:pt-0 last:pb-0 border-t border-ink-800/60 first:border-t-0",
+      className,
+    )}
+  >
     {label && (
       <div className="text-[10px] uppercase tracking-[0.22em] text-ink-500 mb-3">{label}</div>
     )}

@@ -18,10 +18,12 @@ export const Button = ({
 }) => (
   <button
     {...props}
+    style={{ transitionProperty: "background-color, border-color, color, transform" }}
     className={cn(
       "inline-flex items-center justify-center gap-2 rounded-lg font-medium border transition-colors select-none",
+      "active:scale-[0.96]",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950",
-      "disabled:opacity-30 disabled:cursor-not-allowed",
+      "disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100",
       size === "sm" && "px-3 py-1.5 text-[12px] min-h-[34px]",
       size === "md" && "px-4 py-2.5 text-[13px] min-h-[40px]",
       variant === "primary" &&

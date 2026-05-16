@@ -93,7 +93,13 @@ export default defineConfig({
       '@midnight-ntwrk/onchain-runtime-v3/midnight_onchain_runtime_wasm.js',
     ],
   },
-  define: {},
+  define: {
+    // Polyfill Node-style globals some deps reference at top level.
+    // process.env reads → empty object, global → globalThis.
+    'process.env': {},
+    'process.browser': true,
+    global: 'globalThis',
+  },
   checks: {
     importIsUndefined: false,
     pluginTimings: false,

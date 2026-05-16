@@ -83,6 +83,14 @@ export const Tldr = () => (
             <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" style={{ transitionProperty: "transform" }} />
           </a>
           <a
+            href="#demo-video"
+            className="inline-flex items-center gap-1.5 hover:text-ink-100 transition-colors group"
+            style={{ transitionProperty: "color" }}
+          >
+            watch the demo video
+            <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" style={{ transitionProperty: "transform" }} />
+          </a>
+          <a
             href="https://github.com/1shanpanta/aegis"
             target="_blank"
             rel="noreferrer"

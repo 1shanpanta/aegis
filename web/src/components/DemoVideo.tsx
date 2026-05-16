@@ -67,7 +67,7 @@ const normalizeVideoUrl = (raw: string | undefined): string | undefined => {
 export const DemoVideo = ({ embedUrl, videoSrc, poster }: Props) => {
   const resolvedEmbed = normalizeVideoUrl(embedUrl);
   return (
-  <section className="relative w-full px-6 lg:px-10 py-32 lg:py-44 overflow-hidden isolate">
+  <section id="demo-video" className="relative w-full px-6 lg:px-10 py-32 lg:py-44 overflow-hidden isolate scroll-mt-12">
     {/* Atmospheric shader behind the video frame. Heavily faded so the
         frame itself reads as glass-over-busy per design.md ingredient #3. */}
     <div

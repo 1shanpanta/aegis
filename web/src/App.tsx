@@ -11,6 +11,7 @@ import { PublicView } from "./components/PublicView";
 import { EventLog } from "./components/EventLog";
 import { useAegis } from "./lib/aegis-engine";
 import { PulseDot } from "./components/LiveChrome";
+import { ModeToggle } from "./components/ModeToggle";
 
 const ease = [0.2, 0.7, 0.2, 1] as const;
 
@@ -57,11 +58,8 @@ const App = () => {
                 counterparties never appear, only opaque commitments.
               </p>
             </div>
-            <div className="flex items-center gap-3 self-start lg:self-end">
-              <span className="flex items-center gap-1.5 text-[11px] text-shield-300">
-                <PulseDot tone="shield" />
-                live simulator
-              </span>
+            <div className="flex items-center gap-3 self-start lg:self-end flex-wrap">
+              <ModeToggle />
               <button
                 onClick={reset}
                 className="inline-flex items-center gap-1.5 text-[11px] text-ink-300 hover:text-ink-100 transition-colors border border-ink-700/80 rounded-full px-3 py-1.5"

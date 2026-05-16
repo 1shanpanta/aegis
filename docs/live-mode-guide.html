@@ -207,6 +207,65 @@
     <li>The 10 contract tests. They keep running against the simulator.</li>
     <li>The marketing site, the hero, the comparison, the video section.</li>
   </ul>
+
+  <h3>The four-actor model &mdash; who signs, who proves, who reads</h3>
+  <p>
+    Before installing anything, internalize this. ZK chains have two distinct cryptographic
+    duties: <em class="s">signing</em> and <em class="s">proving</em>. They are not the same
+    operation and they live in different actors.
+  </p>
+  <table>
+    <thead>
+      <tr><th style="width: 20%">Actor</th><th style="width: 22%">Role</th><th>What it does</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Lace wallet</strong></td>
+        <td><span class="pill blue">signer</span></td>
+        <td>Holds your Midnight private key. Signs the tx envelope (<em class="s">&ldquo;I, this address, authorize this transaction&rdquo;</em>). Your key never leaves the extension. Lace also exposes <code>window.midnight.mnLace</code> for dApp connection. <strong>Without Lace, nothing gets authorized.</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Proof server</strong></td>
+        <td><span class="pill warn">prover</span></td>
+        <td>The Docker container on <code>localhost:6300</code>. Runs the Compact circuit over your private witnesses (allowance limit, whitelist, etc.), produces a zk-SNARK that proves the circuit assertions hold <em class="s">without revealing the witness values</em>. <strong>Not a signer.</strong> It owns no keys, it just does the math the browser is too slow / too memory-constrained to do. The proof gets attached to the tx Lace signs.</td>
+      </tr>
+      <tr>
+        <td><strong>Indexer</strong></td>
+        <td><span class="pill">reader</span></td>
+        <td>A hosted GraphQL service (<code>indexer.preprod.midnight.network</code>) that watches the chain and lets your dApp <em class="s">read</em> ledger state without running a full node. Public-only data. Read-only.</td>
+      </tr>
+      <tr>
+        <td><strong>Node</strong></td>
+        <td><span class="pill green">chain</span></td>
+        <td>The Midnight network itself. Accepts signed tx + ZK proof, verifies both, includes in a block. Verification is fast (verifying a zk-SNARK is microseconds; generating one is seconds, which is why the proof server is heavy).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout info">
+    <div class="tag">A single Aegis spend in flight</div>
+    <p>
+      Agent clicks <em class="s">Spend $250 &rarr; Uniswap</em>. The browser asks the local proof
+      server to run <code>executeAgentTx</code> over (amount, counterparty, nonce) against the
+      principal&rsquo;s witness state (cap, whitelist, spend-so-far). The proof server returns a
+      <code>~5KB</code> proof. The browser asks Lace to sign the tx envelope that wraps the proof.
+      Lace shows the popup; user clicks Confirm. The signed-and-proven tx broadcasts to the node.
+      The node verifies the signature (cheap) and the proof (cheap), accepts it, includes in a
+      block. The indexer notices, emits the new ledger state on the WebSocket. The Aegis UI
+      receives the new state, updates the public pane.
+    </p>
+  </div>
+
+  <div class="callout warn">
+    <div class="tag">Privy is NOT in this picture</div>
+    <p>
+      Privy is a user-identity layer that signs EVM and Solana, not Midnight. The Privy sign-in
+      pill in the hero is for: (a) marketing-site identity, (b) Build Club lead capture, (c) future
+      &ldquo;save my demo state to my Privy account&rdquo; features. It does <em class="s">not</em>
+      drive contract calls. Aegis on Midnight always signs with Lace and always proves with the
+      local proof server, regardless of whether the user is also signed into Privy.
+    </p>
+  </div>
 </section>
 
 <!-- 6 -->

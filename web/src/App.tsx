@@ -105,6 +105,8 @@ const App = () => {
         </div>
       </section>
 
+      <Tldr />
+
       <footer className="border-t border-ink-800/80 px-6 lg:px-10 py-10">
         <div className="mx-auto max-w-[1400px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-ink-500">
           <div className="flex items-center gap-2">

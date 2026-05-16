@@ -39,13 +39,21 @@ const App = () => {
         id="demo"
         className="relative w-full px-6 lg:px-10 py-24 lg:py-28 overflow-hidden isolate"
       >
-        {/* Quiet shader behind the section header — fades to ink before the cards. */}
+        {/* Full-height shader behind the demo section, dimmed so the 3-pane
+            cards still read clearly as glass-over-busy. */}
         <div
           aria-hidden
-          className="absolute inset-x-0 top-0 h-[40%] -z-10 pointer-events-none opacity-40"
+          className="absolute inset-0 -z-10 pointer-events-none opacity-25"
         >
           <Shader />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/60 via-ink-950/80 to-ink-950" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, transparent 0%, rgba(7,9,13,0.55) 60%, rgba(7,9,13,0.92) 100%)",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-950/35 via-transparent to-ink-950/55" />
         </div>
         <div className="mx-auto max-w-[1400px]">
           <motion.div

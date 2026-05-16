@@ -91,9 +91,18 @@ export const Hero = () => (
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-ink-100 bg-ink-50/[0.06] hover:bg-ink-50/[0.12] border border-ink-50/15 backdrop-blur-md transition-colors"
+          style={{ transitionProperty: "background-color, color" }}
         >
           <Github className="w-3.5 h-3.5" />
           View source
+        </a>
+        <a
+          href="#tldr"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-ink-300 hover:text-ink-100 transition-colors"
+          style={{ transitionProperty: "color" }}
+        >
+          TL;DR
+          <ArrowRight className="w-3.5 h-3.5 rotate-90" />
         </a>
       </motion.div>
 

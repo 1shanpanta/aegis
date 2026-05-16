@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { motion } from "framer-motion";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { RefreshCw, Sparkles, Github } from "lucide-react";
 import { Hero } from "./components/Hero";
 import { Tldr } from "./components/Tldr";
 import { HowItWorks } from "./components/HowItWorks";
@@ -127,9 +127,11 @@ const App = () => {
               href="https://github.com/1shanpanta/aegis"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-ink-200 transition-colors"
+              className="inline-flex items-center gap-1.5 hover:text-ink-200 transition-colors"
+              style={{ transitionProperty: "color" }}
             >
-              GitHub
+              <Github className="w-3.5 h-3.5" />
+              github.com/1shanpanta/aegis
             </a>
             <a
               href="https://midnight.network"

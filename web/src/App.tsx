@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { motion } from "framer-motion";
-import { RefreshCw, Sparkles, Github } from "lucide-react";
+import { RefreshCw, Github } from "lucide-react";
 import { Hero } from "./components/Hero";
 import { Tldr } from "./components/Tldr";
 import { HowItWorks } from "./components/HowItWorks";
@@ -62,8 +62,9 @@ const App = () => {
             className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10"
           >
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-accent-300 mb-3">
-                <Sparkles className="w-3 h-3" /> Interactive demo
+              <div className="inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.22em] text-accent-300 mb-3">
+                <span className="inline-block w-6 h-px bg-accent-500/70" />
+                Interactive demo
               </div>
               <h2 className="text-[clamp(1.8rem,3.5vw,2.6rem)] leading-tight tracking-[-0.02em] text-ink-50">
                 Same chain state.{" "}

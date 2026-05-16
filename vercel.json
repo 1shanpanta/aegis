@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm --workspace @aegis/contract run build && npm --workspace @aegis/web run build",
+  "outputDirectory": "web/dist",
+  "installCommand": "npm install"
+}

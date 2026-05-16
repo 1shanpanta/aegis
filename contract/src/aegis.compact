@@ -1,0 +1,77 @@
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+export enum AllowanceState {
+  UNINITIALIZED,
+  ACTIVE,
+  REVOKED
+}
+
+export ledger state: AllowanceState;
+export ledger principalPk: Bytes<32>;
+export ledger agentPk: Bytes<32>;
+export ledger txCount: Counter;
+export ledger lastTxCommitment: Maybe<Bytes<32>>;
+
+witness localSecretKey(): Bytes<32>;
+witness allowanceLimit(): Uint<64>;
+witness spendSoFar(): Uint<64>;
+witness whitelist(): Vector<3, Bytes<32>>;
+witness recordSpend(amount: Uint<64>): [];
+
+constructor() {
+  state = AllowanceState.UNINITIALIZED;
+  lastTxCommitment = none<Bytes<32>>();
+}
+
+export circuit publicKey(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "aegis:pk:"), sk]);
+}
+
+export circuit createAllowance(
+  newPrincipalPk: Bytes<32>,
+  newAgentPk: Bytes<32>
+): [] {
+  assert(state == AllowanceState.UNINITIALIZED, "Allowance already initialized");
+  assert(newPrincipalPk == publicKey(localSecretKey()), "Caller is not principal");
+  principalPk = disclose(newPrincipalPk);
+  agentPk = disclose(newAgentPk);
+  state = AllowanceState.ACTIVE;
+}
+
+export circuit executeAgentTx(
+  amount: Uint<64>,
+  counterparty: Bytes<32>,
+  nonce: Bytes<32>
+): [] {
+  assert(state == AllowanceState.ACTIVE, "Allowance not active");
+  assert(agentPk == publicKey(localSecretKey()), "Caller is not agent");
+
+  const limit = allowanceLimit();
+  const spent = spendSoFar();
+  assert(spent + amount <= limit, "Spend exceeds allowance");
+
+  const wl = whitelist();
+  assert(
+    counterparty == wl[0] || counterparty == wl[1] || counterparty == wl[2],
+    "Counterparty not whitelisted"
+  );
+
+  recordSpend(amount);
+
+  const commitment = persistentHash<Vector<3, Bytes<32>>>([
+    amount as Field as Bytes<32>,
+    counterparty,
+    nonce
+  ]);
+  lastTxCommitment = disclose(some<Bytes<32>>(commitment));
+  txCount.increment(1);
+}
+
+export circuit revokeAllowance(): [] {
+  assert(state == AllowanceState.ACTIVE, "Allowance not active");
+  assert(principalPk == publicKey(localSecretKey()), "Caller is not principal");
+  state = AllowanceState.REVOKED;
+  lastTxCommitment = none<Bytes<32>>();
+}

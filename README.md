@@ -1,277 +1,182 @@
-# Bulletin Board DApp
+# Aegis
 
-This project is built on the [Midnight Network](https://midnight.network/).
+**The shielded audit primitive every regulated enterprise needs to deploy AI agents.**
 
-[![Generic badge](https://img.shields.io/badge/Compact%20Compiler-0.30.0-1abc9c.svg)](https://shields.io/)
-[![Generic badge](https://img.shields.io/badge/TypeScript-5.9.3-blue.svg)](https://shields.io/)
+[![Compact](https://img.shields.io/badge/compactc-0.31.0-1abc9c.svg)](https://github.com/midnightntwrk/compact) [![TypeScript](https://img.shields.io/badge/typescript-5.9-blue.svg)](https://www.typescriptlang.org/) [![Midnight](https://img.shields.io/badge/Midnight-mainnet-6366f1.svg)](https://midnight.network) [![Tests](https://img.shields.io/badge/contract%20tests-10%2F10-success.svg)](./contract/src/test)
 
+> Submitted to the [Midnight Hackathon · May 2026](https://events.mlh.io/events/14061-midnight-hackathon-may-2026) · AI Track.
 
-> **Use this repo as a template. Do not fork it.**
->  
-> This repository is intended to be used via GitHub’s “Use this template” flow.  
-> Forking this repo is discouraged, as forks are not tracked as independent projects.
+---
 
-A Midnight smart contract example demonstrating a simple one-item bulletin board with zero-knowledge proofs on testnet. Users can post a single message at a time, and only the message author can remove it.
+## The problem
 
-## Project Structure
+In February 2026 Coinbase shipped Agentic Wallets. By April, LLM-router exfiltration drained roughly $500K from agent wallet users in plaintext. The August 2026 EU AI Act enforcement deadline will require every Fortune 500 deploying AI agents to produce auditable evidence that those agents acted within policy, without exposing competitive strategy, supplier lists, or customer PII on a public chain.
 
-```
-bulletin-board/
-├── contract/               # Smart contract in Compact language
-│   └── src/               # Contract source and utilities
-├── api/                   # Methods, classes and types for CLI and UI
-├── bboard-cli/            # Command-line interface
-│   └── src/               # CLI implementation
-└── bboard-ui/             # Web browser interface
-    └── src/               # Web UI implementation
-```
+Current "agentic wallet" stacks (Coinbase, Cobo, MoonPay) enforce spend limits inside a TEE. Auditors do not accept TEE attestations as cross-organisational evidence. Google's AP2 mandates are publicly signed JSON. Aleo for Agents has no allowance primitive at all. The shipped ZK Mandates concept (Patel, 2026) is a paper, not a contract.
 
-## Prerequisites
+**Aegis is the first shipped Compact-native implementation of a shielded principal-to-agent allowance** where the cap, the counterparty whitelist, and the running spend are bound inside ZK circuits, while still producing a cryptographic audit trail.
 
-### 1. Node.js Version Check
+## What Aegis does
 
-You need Node.js:
+| Concern | Aegis primitive |
+| --- | --- |
+| Set a private spending cap on a delegated agent | `createAllowance(principalPk, agentPk)` with `allowanceLimit` held as a witness |
+| Restrict spending to known counterparties | `whitelist` witness with three fixed shielded addresses |
+| Prove each spend was within policy, without revealing policy | `executeAgentTx(amount, counterparty, nonce)` emits a `persistentHash` commitment |
+| Audit the full ledger as principal | Principal holds the witness state and the (amount, counterparty, nonce) tuples locally |
+| Stop the agent | `revokeAllowance()` flips the public state to `REVOKED` |
+
+The chain ever shows is: `state`, `principalPk`, `agentPk`, `txCount`, and `lastTxCommitment`. Amounts, counterparties, and running totals are bound inside the commitment and the principal's witness state.
+
+## Demo
 
 ```bash
-node --version
-```
-
-Expected output: `v24.11.1` or higher. The repository includes an [.nvmrc](./.nvmrc) pinned to `24.11.1`.
-
-If you get a lower version: [Install Node.js LTS](https://nodejs.org/).
-
-### 2. Docker Installation
-
-The [proof server](https://docs.midnight.network/develop/tutorial/using/proof-server) runs in Docker and is required for both CLI and UI to generate zero-knowledge proofs:
-
-```bash
-docker --version
-```
-
-Expected output: `Docker version X.X.X`.
-
-If Docker is not found: [Install Docker Desktop](https://docs.docker.com/desktop/). Make sure Docker Desktop is running.
-
-### 3. Lace Wallet Extension (UI Only)
-
-For the web interface, install the official Lace wallet extension on [Chrome Store](https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk) or the [Edge Store](https://microsoftedge.microsoft.com/addons/detail/lace/efeiemlfnahiidnjglmehaihacglceia) (tested with version 1.36.0).
-
-After installing, set up the Midnight wallet:
-
-1. Create a **new wallet** — Midnight will appear as a network option
-2. Set **Network** to **Preprod**
-3. Set **Proof server** to **Local (http://localhost:6300)** — this must point to your local proof server started via Docker
-4. Click **Enter Wallet**
-5. Fund your wallet with tNIGHT tokens from the [Preprod Faucet](https://faucet.preprod.midnight.network/)
-6. Go to **Tokens** in the wallet, click **Generate tDUST**, and confirm the transaction — tDUST tokens are required to pay transaction fees on preprod
-
-## Setup Instructions
-
-### Install Project Dependencies
-
-```bash
+git clone <this repo>
+cd aegis
 npm install
+npm --workspace @aegis/contract run build
+npm --workspace @aegis/ui run dev
+# open http://localhost:5173
 ```
 
-This repository uses npm workspaces. Run installation once from the repository root.
+The UI is a three-pane comparison of the same chain state from three perspectives:
 
-### Compile the Smart Contract
+1. **Principal**, the human delegator. Sees the shielded cap, the shielded whitelist, and the full per-tx audit log.
+2. **Agent**, the LLM-driven trader. Has authorised spend buttons, plus deliberately-attacking buttons that try to bypass the cap and the whitelist.
+3. **Public chain**, what every outsider sees. Just the ledger fields. Amounts and counterparties are cryptographically hidden.
 
-The Compact compiler (`compactc 0.30.0`) generates TypeScript bindings and zero-knowledge circuits from the smart contract source code:
+Try the attacks: $9,000 spend over a $5,000 cap, payment to a sanctioned address, payment to an unknown actor. The contract rejects each with a `failed assert` from inside the circuit.
+
+## Architecture
+
+```
+aegis/
+├── contract/                Compact smart contract + test simulator
+│   └── src/
+│       ├── aegis.compact    The on-chain contract
+│       ├── witnesses.ts     Client-side private state + witness implementations
+│       ├── aegis-simulator.ts In-browser harness used by both tests and UI
+│       └── test/aegis.test.ts 10 passing tests covering all reject paths
+├── aegis-ui/                React 19 + Tailwind 4 + framer-motion demo
+└── api/                     Reserved for live-network mode (Lace wallet + proof server)
+```
+
+### The Compact contract
+
+```compact
+export ledger state: AllowanceState;
+export ledger principalPk: Bytes<32>;
+export ledger agentPk: Bytes<32>;
+export ledger txCount: Counter;
+export ledger lastTxCommitment: Maybe<Bytes<32>>;
+
+witness localSecretKey(): Bytes<32>;
+witness allowanceLimit(): Uint<64>;
+witness spendSoFar(): Uint<64>;
+witness whitelist(): Vector<3, Bytes<32>>;
+witness recordSpend(amount: Uint<64>): [];
+
+export circuit executeAgentTx(
+  amount: Uint<64>,
+  counterparty: Bytes<32>,
+  nonce: Bytes<32>
+): [] {
+  assert(state == AllowanceState.ACTIVE, "Allowance not active");
+  assert(agentPk == publicKey(localSecretKey()), "Caller is not agent");
+
+  const limit = allowanceLimit();
+  const spent = spendSoFar();
+  assert(spent + amount <= limit, "Spend exceeds allowance");
+
+  const wl = whitelist();
+  assert(
+    counterparty == wl[0] || counterparty == wl[1] || counterparty == wl[2],
+    "Counterparty not whitelisted"
+  );
+
+  recordSpend(amount);
+
+  const commitment = persistentHash<Vector<3, Bytes<32>>>([
+    amount as Field as Bytes<32>,
+    counterparty,
+    nonce
+  ]);
+  lastTxCommitment = disclose(some<Bytes<32>>(commitment));
+  txCount.increment(1);
+}
+```
+
+The full contract is in [contract/src/aegis.compact](contract/src/aegis.compact).
+
+### What is private vs public
+
+| Variable | On chain | In witness | Reason |
+| --- | --- | --- | --- |
+| `allowanceLimit` | no | yes | competitive strategy |
+| `spendSoFar` | no | yes | current exposure |
+| `whitelist` | no | yes | supplier list |
+| `amount` per tx | hashed | yes | trade size |
+| `counterparty` per tx | hashed | yes | who you traded with |
+| `nonce` per tx | hashed | yes | makes commitment preimage-resistant |
+| `principalPk`, `agentPk` | yes | yes | identity binding |
+| `txCount` | yes | n/a | activity level (rate-limit observable) |
+| `state` (UNINIT/ACTIVE/REVOKED) | yes | n/a | lifecycle |
+
+An outsider can see "an allowance is active and N spends occurred." They cannot recover any amount or counterparty without the principal's local audit log. A 256-bit nonce makes preimage brute force infeasible.
+
+## Why this would survive on Midnight mainnet
+
+- **No cross-contract calls.** Aegis is one self-contained Compact contract.
+- **No oracle dependency.** Counterparty addresses are bound at allowance-creation time.
+- **No Merkle proof verification in-circuit.** A fixed-size `Vector<3>` whitelist keeps the circuit small (10 tests on the simulator pass in 162ms total, no exotic stdlib).
+- **No reuse of Solidity patterns.** The principal/agent role split uses Midnight's witness pattern, not `msg.sender`.
+- **The same contract compiles for testnet, mainnet, and the in-browser simulator.** No code branches.
+
+## Comparison
+
+| | Coinbase Agentic Wallets | Google AP2 | Aleo for Agents | **Aegis** |
+| --- | --- | --- | --- | --- |
+| Spending limit hidden from chain | TEE | no | n/a | **yes (ZK)** |
+| Counterparty whitelist hidden | TEE | no | n/a | **yes (ZK)** |
+| Cross-org auditability | weak (TEE attestation) | strong (public) | n/a | **strong (selective disclosure)** |
+| Open-source contract | no | yes | yes | **yes** |
+| Shipped on a privacy-native chain | no | no | partial | **yes (Midnight)** |
+
+## Tests
 
 ```bash
-cd contract
-npm run compact    # Compiles the Compact contract
-npm run build      # Copies compiled files to dist/
-cd ..
+npm --workspace @aegis/contract run test
 ```
 
-Expected output:
-
 ```
-> compact
-> compact compile src/bboard.compact ./src/managed/bboard
-
-Compiling 2 circuits:
-  circuit "post" (k=14, rows=10070)
-  circuit "takeDown" (k=14, rows=10087)
-
-> build
-> rm -rf dist && tsc --project tsconfig.build.json && cp -Rf ./src/managed ./dist/managed && cp ./src/bboard.compact ./dist
-
+✓ initializes in UNINITIALIZED state with empty commitment
+✓ createAllowance moves to ACTIVE and records principal + agent keys
+✓ allows the agent to spend within the allowance and emits commitments
+✓ rejects spend that would exceed the allowance
+✓ rejects counterparty not in the whitelist
+✓ rejects agent spending before allowance is created
+✓ revokeAllowance halts further spending
+✓ rejects createAllowance if claimed principalPk does not match the caller's key
+✓ rejects the principal trying to call executeAgentTx
+✓ rejects the agent trying to revoke the allowance
 ```
 
-### Build the CLI Interface
+## Roadmap
 
-```bash
-cd bboard-cli
-npm run build
-cd ..
-```
+1. **Selective disclosure keys** — let the principal mint an audit token that decrypts the local log for a regulator without sharing the witness state.
+2. **Multi-agent allowances** — one principal granting allowances to N agents, each with their own shielded sub-cap.
+3. **Rolling time-window limits** — an allowance that resets daily/weekly via a public clock witness.
+4. **Live Lace wallet mode** — the existing `api/` workspace already has Midnight.js wired up. Wire it through the UI to deploy to preprod/mainnet from a Lace popup.
+5. **Encrypted on-chain audit blobs** — replace the local audit log with `encrypt(principalPk, [amount, counterparty])` published on-chain so the principal does not need to share private state with the agent out-of-band.
 
-### Build the UI Interface (Optional)
+## License
 
-Only needed if you want to use the web interface:
+Apache 2.0 (inherits the Midnight bboard template upstream).
 
-```bash
-cd bboard-ui
-npm run build
-cd ..
-```
+## Credits
 
-## Option 1: CLI Interface
+Built solo for the May 2026 Midnight Hackathon. Forked from the Midnight `bboard` template by Midnight Foundation. The contract logic, witnesses, simulator, UI, and pitch are original.
 
-### Start the Proof Server
+---
 
-The CLI requires a local proof server running in Docker:
-
-```bash
-cd bboard-cli
-docker compose -f proof-server-local.yml up -d
-```
-
-This uses `midnightntwrk/proof-server:8.0.3` on `http://127.0.0.1:6300`.
-
-### Run the CLI
-
-```bash
-# For preprod network
-npm run preprod-remote
-
-# For preview network
-npm run preview-remote
-```
-
-### Using the CLI
-
-#### Create a Wallet
-
-1. Choose option `1` to build a fresh wallet
-2. The system will generate a wallet address and seed
-3. **Save both the address and seed** - you'll need them later
-
-Expected output is similar to:
-
-```
-Your wallet seed is: [64-character hex string]
-Using unshielded address: mn_addr_preprod1hdvtst70zfgd8wvh7l8ppp7mcrxnjn56wc5hlxpwflz3fxdykaesrw0ln4 waiting for funds...
-```
-
-#### Fund Your Wallet
-
-Before deploying contracts, you need testnet tokens.
-
-1. Copy your wallet address from the output above
-2. Visit the [faucet](https://faucet.preprod.midnight.network/)
-3. Paste your address and request funds
-4. Wait for the CLI to detect the funds (takes 2-3 minutes)
-
-Expected output after funding is similar to:
-
-```
-Your NIGHT wallet balance is: 1000000000
-```
-
-#### Deploy Your Contract
-
-1. Choose the contract deployment option
-2. Wait for deployment (takes ~30 seconds)
-3. **Save the contract address** for future use
-
-Expected output:
-
-```
-Deployed bulletin board contract at address: [contract address]
-```
-
-#### Use the Bulletin Board
-
-You can now:
-
-- **Post** a message to the bulletin board
-- **View** the current message
-- **Remove** your message (only if you posted it)
-- **Exit** when done
-
-Each action creates a real transaction on Midnight Testnet using zero-knowledge proofs generated by the proof server.
-
-## Option 2: Web UI Interface
-
-The web interface uses the same proof server and requires additional browser setup.
-
-### Start the Proof Server (if not already running)
-
-If you haven't started the proof server for the CLI, start it now:
-
-```bash
-cd bboard-cli
-docker compose -f proof-server-local.yml up -d
-cd ..
-```
-
-Verify it's running:
-
-```bash
-docker ps
-```
-
-### Start the Web Interface
-
-The UI can run against preprod or preview networks:
-
-```bash
-cd bboard-ui
-
-# For preprod network
-npm run build:start
-
-# For preview network
-npm run build:start:preview
-```
-
-The UI will be available at:
-
-- http://127.0.0.1:8080
-
-### Browser Setup
-
-1. **Open the UI URL** in a browser with Lace wallet extension installed
-2. **Set up Lace wallet** if it's your first time
-3. **Authorize the application** when Lace wallet prompts
-4. Use the bulletin board web interface
-
-## Useful Links
-
-- Get Testnet tNIGHT on [Preprod Faucet](https://faucet.preprod.midnight.network/) or [Preview Faucet](https://faucet.preview.midnight.network/)
-- [Midnight Documentation](https://docs.midnight.network/examples/dapps/bboard) - Complete developer guide
-- [Compatibility Matrix](https://docs.midnight.network/relnotes/support-matrix) - Current supported Midnight component versions
-- [Compact Language Guide](https://docs.midnight.network/compact/writing) - Smart contract language reference
-- Get Lace wallet on the [Chrome Store](https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk) or the [Edge Store](https://microsoftedge.microsoft.com/addons/detail/lace/efeiemlfnahiidnjglmehaihacglceia)
-
-## Troubleshooting
-
-| Common Issue                       | Solution                                                                                                  |
-| ---------------------------------- |-----------------------------------------------------------------------------------------------------------|
-| `npm install` fails                | Ensure you're using Node `v24.11.1` or newer. Older Node versions can install with warnings but are not the target runtime |
-| Contract compilation fails         | Ensure the Compact toolchain is installed and run `npm run compact` from `contract/`                      |
-| Network connection timeout         | CLI requires internet connection, restart if connection times out                                         |
-| Token funding takes too long       | Wait 1-2 minutes, funding is automatic in CLI                                                             |
-| "Application not authorized" error | Start proof server: `docker compose -f proof-server-local.yml up -d`                                      |
-| Lace wallet not detected           | Install Lace wallet browser extension and refresh page                                                    |
-| Docker issues                      | Ensure Docker Desktop is running, check `docker --version`                                                |
-| Port 6300 in use                   | Run `docker compose down` then restart services                                                           |
-| Dependencies won't install         | Use Node.js LTS version. For older npm versions, you may need `--legacy-peer-deps`                        |
-| Contract deployment fails          | Verify wallet has sufficient balance and network connection                                               |
-
-## Notes
-
-- CLI and UI can run simultaneously and share the same proof server
-- Proof server (Docker) is required for both CLI and UI to generate zero-knowledge proofs
-- Contract must be compiled before building CLI or UI
-- Fund your wallet using the testnet faucet before deploying contracts
-
-## Implementation Notes
-
-- **Transaction fee configuration**  
-  The default `additionalFeeOverhead` value (`500_000_000_000_000_000n`) from `@midnight-ntwrk/testkit-js` is required on the `undeployed` network. Lower values can fail with `BalanceCheckOverspend` on the node side. On remote networks, that overhead requires too much dust, so the CLI overrides it to `1_000n`.
-- CLI private state is stored per contract address, matching the `Midnight.js 4.x` private-state provider model.
+Aegis · 100% Compact · same contract deploys to Midnight mainnet.

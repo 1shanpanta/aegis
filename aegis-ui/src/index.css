@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-50: #f5f7fa;
+  --color-ink-100: #e8ecf1;
+  --color-ink-200: #c9d2dc;
+  --color-ink-300: #98a3b3;
+  --color-ink-400: #6e7a8a;
+  --color-ink-500: #4c5564;
+  --color-ink-600: #353c47;
+  --color-ink-700: #232932;
+  --color-ink-800: #161b22;
+  --color-ink-900: #0d1117;
+  --color-ink-950: #07090d;
+
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+
+  --color-shield-300: #6ee7b7;
+  --color-shield-400: #34d399;
+  --color-shield-500: #10b981;
+
+  --color-warn-400: #fbbf24;
+  --color-warn-500: #f59e0b;
+
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
+}
+
+html, body, #root {
+  height: 100%;
+  background-color: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11", "tnum";
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-image:
+    radial-gradient(at 12% -10%, color-mix(in oklab, var(--color-accent-500) 15%, transparent), transparent 45%),
+    radial-gradient(at 88% 110%, color-mix(in oklab, var(--color-shield-500) 10%, transparent), transparent 50%);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent-500) 35%, transparent);
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("https://rsms.me/inter/font-files/InterVariable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2") format("woff2");
+}

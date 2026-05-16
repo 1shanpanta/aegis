@@ -1,29 +1,18 @@
-// This file is part of midnightntwrk/example-counter.
-// Copyright (C) Midnight Foundation
 // SPDX-License-Identifier: Apache-2.0
-// Licensed under the Apache License, Version 2.0 (the "License");
-// You may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Aegis: shielded allowances for AI agent wallets.
 
 import { CompiledContract } from "@midnight-ntwrk/compact-js";
 
-export * from "./managed/bboard/contract/index.js";
+export * from "./managed/aegis/contract/index.js";
 export * from "./witnesses";
+export { AegisSimulator } from "./aegis-simulator";
 
-import * as CompiledBBoardContract from "./managed/bboard/contract/index.js";
+import * as CompiledAegisContract from "./managed/aegis/contract/index.js";
 import * as Witnesses from "./witnesses";
 
-export const CompiledBBoardContractContract = CompiledContract.make<
-  CompiledBBoardContract.Contract<Witnesses.BBoardPrivateState>
->("BBoard", CompiledBBoardContract.Contract<Witnesses.BBoardPrivateState>).pipe(
+export const CompiledAegisContractContract = CompiledContract.make<
+  CompiledAegisContract.Contract<Witnesses.AegisPrivateState>
+>("Aegis", CompiledAegisContract.Contract<Witnesses.AegisPrivateState>).pipe(
   CompiledContract.withWitnesses(Witnesses.witnesses),
-  CompiledContract.withCompiledFileAssets("./managed/bboard"),
+  CompiledContract.withCompiledFileAssets("./managed/aegis"),
 );

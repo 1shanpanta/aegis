@@ -1,7 +1,7 @@
 {
-  "name": "@midnight-ntwrk/example-bboard",
+  "name": "aegis",
   "version": "0.1.0",
-  "author": "IOG",
+  "author": "Aegis Team",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -10,15 +10,14 @@
   },
   "workspaces": {
     "packages": [
-      "bboard-cli",
-      "bboard-ui",
+      "aegis-ui",
       "api",
       "contract"
     ]
   },
   "dependencies": {
     "@midnight-ntwrk/compact-js": "^2.5.0",
-    "@midnight-ntwrk/compact-runtime": "^0.15.0",
+    "@midnight-ntwrk/compact-runtime": "^0.16.0",
     "@midnight-ntwrk/dapp-connector-api": "^4.0.0",
     "@midnight-ntwrk/ledger-v8": "^8.0.0",
     "@midnight-ntwrk/midnight-js-compact": "^4.0.0",

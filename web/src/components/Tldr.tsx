@@ -4,11 +4,23 @@ import { ArrowRight } from "lucide-react";
 
 const ease = [0.2, 0.7, 0.2, 1] as const;
 
-const stats = [
-  { value: "1", label: "Compact contract", tone: "ink" as const },
-  { value: "3", label: "ZK circuits", tone: "ink" as const },
-  { value: "5", label: "Private witnesses", tone: "ink" as const },
-  { value: "10 / 10", label: "Tests passing", tone: "accent" as const },
+const useCases = [
+  {
+    sector: "Enterprise AI",
+    body: "Audit-ready agents for SOC2 + EU AI Act deployments.",
+  },
+  {
+    sector: "Algo trading",
+    body: "Hide strategy from the chain, prove policy compliance.",
+  },
+  {
+    sector: "DAO treasuries",
+    body: "Delegate spend to bots, revoke and audit on demand.",
+  },
+  {
+    sector: "Procurement bots",
+    body: "Supplier lists stay private, spend caps stay enforced.",
+  },
 ];
 
 export const Tldr = () => (
@@ -33,30 +45,31 @@ export const Tldr = () => (
           shared key.
         </p>
 
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-y-6 sm:gap-y-0 border-t border-ink-800/60 pt-7">
-          {stats.map((s, i) => (
+        <div className="mt-10 mb-2 text-[10px] uppercase tracking-[0.22em] text-ink-500 border-t border-ink-800/60 pt-7">
+          Where this is useful
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 sm:gap-y-7 lg:gap-y-0 mt-4">
+          {useCases.map((u, i) => (
             <motion.div
-              key={s.label}
+              key={u.sector}
               initial={{ opacity: 0, y: 6 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ delay: 0.08 + i * 0.05, duration: 0.45, ease }}
               className={
-                "sm:px-5 first:sm:pl-0 last:sm:pr-0 " +
-                (i > 0 ? "sm:border-l sm:border-ink-800/60" : "")
+                "lg:px-5 first:lg:pl-0 last:lg:pr-0 " +
+                (i > 0 ? "lg:border-l lg:border-ink-800/60" : "")
               }
             >
-              <div
-                className={
-                  "font-mono text-[26px] leading-none tracking-tight tabular-nums mb-2 " +
-                  (s.tone === "accent" ? "text-accent-300" : "text-ink-50")
-                }
+              <div className="text-[13px] text-ink-50 font-medium mb-1.5 tracking-tight">
+                {u.sector}
+              </div>
+              <p
+                className="text-[12.5px] leading-[1.55] text-ink-400 max-w-[28ch]"
+                style={{ textWrap: "pretty" } as React.CSSProperties}
               >
-                {s.value}
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-ink-500">
-                {s.label}
-              </div>
+                {u.body}
+              </p>
             </motion.div>
           ))}
         </div>

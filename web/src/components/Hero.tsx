@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { motion } from "framer-motion";
-import { ArrowRight, Github, Shield } from "lucide-react";
+import { ArrowRight, PlayCircle, Shield } from "lucide-react";
 import { Shader } from "./Shader";
 import { UtcClock, PulseDot } from "./LiveChrome";
 import { AuthButton } from "./AuthButton";
@@ -87,14 +87,12 @@ export const Hero = () => (
           <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
         </a>
         <a
-          href="https://github.com/1shanpanta/aegis"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-ink-100 bg-ink-50/[0.06] hover:bg-ink-50/[0.12] border border-ink-50/15 backdrop-blur-md transition-colors"
+          href="#demo-video"
+          className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-ink-100 bg-ink-50/[0.06] hover:bg-ink-50/[0.12] border border-ink-50/15 backdrop-blur-md transition-colors"
           style={{ transitionProperty: "background-color, color" }}
         >
-          <Github className="w-3.5 h-3.5" />
-          View source
+          <PlayCircle className="w-3.5 h-3.5" />
+          Demo video
         </a>
         <a
           href="#tldr"

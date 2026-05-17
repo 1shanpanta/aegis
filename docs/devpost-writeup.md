@@ -16,7 +16,7 @@ Aegis is the first shipped Compact-native implementation of a shielded principal
 
 ## What it does
 
-A Compact smart contract on Midnight lets a human principal grant an AI agent a spending allowance where:
+Aegis is a single Compact smart contract on Midnight, ~80 lines, three circuits, five witnesses. It is a **primitive** other AI agent infrastructure wraps, not a full agent runtime or a market. Specifically, it lets a human principal grant an AI agent a spending allowance where:
 
 1. The allowance amount is held only as a witness (off-chain, principal-side).
 2. The counterparty whitelist is held only as a witness.
@@ -26,6 +26,27 @@ A Compact smart contract on Midnight lets a human principal grant an AI agent a 
 6. The principal can revoke the allowance at any time.
 
 The chain ever shows: state (UNINIT/ACTIVE/REVOKED), principalPk, agentPk, txCount, and lastTxCommitment.
+
+### Scope and non-goals
+
+Aegis is the cryptographic enforcement layer underneath an agent, not the agent itself.
+
+- **Uniswap V4, Aave V3, 1inch** in the demo are whitelisted counterparty *addresses*, not live DEX integrations. Settlement to those venues is downstream wiring the dApp developer adds; Aegis's contribution is the shielded cap, shielded whitelist, and ZK proof of compliance per spend.
+- **No LLM is bundled.** The "Agent" pane is a button panel representing what an external agent runtime (LangChain, Claude tool-use, an autonomous trader, a Coinbase Agentic Wallet hook) would call into. Plug any of those into the Aegis circuit and they inherit the audit guarantee.
+- **No payment rails.** The contract emits commitments, not transfers. A production integration would pair Aegis with a settlement primitive (USDC, Midnight-native tokens, account abstraction) outside the scope of this submission.
+
+Said as a single line: **Aegis isn't an agent. It's the primitive your agent calls so the chain stays private and the regulator stays satisfied.**
+
+## Who uses this
+
+Aegis is dev infrastructure. Four buyer profiles are immediate:
+
+1. **Agentic wallet vendors** (Coinbase Agentic Wallets, Cobo, MoonPay agent SDKs). They currently enforce agent spend policies inside a TEE. Auditors and EU regulators don't accept TEE attestations as cross-organisational evidence. Aegis swaps the TEE for a ZK proof that *is* cross-org acceptable. They wrap their existing SDK around Aegis and ship.
+2. **AI-managed treasuries and quant funds.** An LP grants the AI portfolio manager a shielded allowance. The chain proves the AI stayed within mandate without leaking position sizing, counterparty venues, or strategy to competitors reading the ledger.
+3. **Enterprise procurement automation.** Finance grants the AI ops agent a shielded allowance with an approved-vendor whitelist. Internal auditors get the full audit log; the public chain doesn't see what the company buys or how much.
+4. **DAOs with operational AI assistants.** Treasury grants the AI assistant a shielded allowance for gas refills, oracle subscriptions, and infrastructure. Competitor DAOs reading the ledger learn nothing about cost structure.
+
+Integration is a `deployContract` call, witness providers that back onto whatever key store the deployer already uses, and one `executeAgentTx` call per spend. The contract source is ~80 lines.
 
 ## How we built it
 

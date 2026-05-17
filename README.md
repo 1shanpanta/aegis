@@ -4,7 +4,22 @@
 
 [![Compact](https://img.shields.io/badge/compactc-0.31-1abc9c.svg)](https://github.com/midnightntwrk/compact) [![Midnight](https://img.shields.io/badge/Midnight-preprod-6366f1.svg)](https://midnight.network) [![Tests](https://img.shields.io/badge/contract%20tests-10%2F10-success.svg)](./contract/src/test)
 
-A Compact-native contract on Midnight where a human principal grants an AI agent a spending allowance with a **shielded cap**, a **shielded counterparty whitelist**, and a **shielded running total**. The chain sees opaque commitments. The principal audits with a shared key. Built for the [Midnight Hackathon · May 2026](https://events.mlh.io/events/14061-midnight-hackathon-may-2026) AI Track.
+A Compact-native primitive on Midnight. A human principal grants an AI agent a spending allowance defined by a **shielded cap**, a **shielded counterparty whitelist**, and a **shielded running total**. Every spend submits a ZK proof that `amount + spent_so_far <= limit` AND `counterparty ∈ whitelist`. The chain sees opaque commitments. The principal audits with a shared key.
+
+Aegis is the **policy layer, not the vault.** Funds live in whatever wallet your agent already operates (Coinbase Agentic Wallet, Cobo, a Safe, a Midnight account). Aegis sits in front of it as the cryptographic permission gate. Settlement-agnostic, custody-agnostic, regulator-acceptable as cross-org evidence in a way TEE attestations are not.
+
+Built for the [Midnight Hackathon · May 2026](https://events.mlh.io/events/14061-midnight-hackathon-may-2026) AI Track.
+
+## Who uses this
+
+Aegis is dev infrastructure, not a consumer product. Built for teams shipping AI agent platforms:
+
+- **Agentic wallet vendors** (Coinbase Agentic Wallets, Cobo, MoonPay agent SDKs). Swap TEE-attestation enforcement for a ZK proof that auditors accept across organizations.
+- **AI-managed treasuries and quant funds.** LPs grant the AI manager a shielded mandate. The chain proves compliance without leaking position sizing, venues, or strategy to competitors reading the ledger.
+- **Enterprise procurement automation.** AI ops agents operate inside a shielded allowance with a private vendor whitelist. Internal audit gets the trail; competitors learn nothing.
+- **DAOs with operational AI assistants.** Shielded refills (gas, oracles, infra subscriptions) so cost structure stays private from competitor DAOs reading the same chain.
+
+The end beneficiary in every case is the **principal** (whose strategy stays private) and the **regulator/auditor** (who gets ZK-verified compliance evidence without privileged access).
 
 ## Run it
 

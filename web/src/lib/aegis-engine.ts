@@ -459,7 +459,10 @@ class AegisEngine {
 
   private takeSnapshot(events?: AegisEvent[]): AegisState {
     return {
-      ledger: this.snapshot?.ledger ?? this.simulator.getLedger(),
+      ledger:
+        this.mode === "simulator"
+          ? this.simulator.getLedger()
+          : this.snapshot?.ledger ?? this.simulator.getLedger(),
       privateState: this.simulator.getPrivateState(),
       auditLog: this.simulator.getPrivateState().auditLog,
       events: events ?? this.snapshot?.events ?? [],

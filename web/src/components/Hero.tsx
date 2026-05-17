@@ -69,7 +69,11 @@ export const Hero = () => (
         A Compact-native primitive on Midnight that gives an AI agent a{" "}
         <span className="text-ink-50">shielded spending allowance</span> with a{" "}
         <span className="text-ink-50">private counterparty whitelist</span>. The chain sees opaque
-        commitments. The principal audits with a shared key.
+        commitments. The principal audits with a shared key.{" "}
+        <span className="text-ink-300">
+          Aegis is the <span className="text-ink-50">policy gate</span>, not the vault. Funds stay
+          in whatever wallet your agent already operates.
+        </span>
       </motion.p>
 
       {/* Glass-card CTA */}

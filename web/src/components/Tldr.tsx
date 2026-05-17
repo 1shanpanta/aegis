@@ -40,9 +40,9 @@ export const Tldr = () => (
           style={{ textWrap: "balance" } as React.CSSProperties}
         >
           A <span className="font-serif italic text-accent-300">shielded allowance</span>{" "}
-          primitive for AI agents on Midnight. Cap, counterparty whitelist, and running spend
-          live as witnesses. The chain sees opaque commitments. The principal audits with a
-          shared key.
+          primitive for AI agents on Midnight. The policy gate, not the vault. Cap, counterparty
+          whitelist, and running spend live as witnesses. The chain sees opaque commitments.
+          The principal audits with a shared key.
         </p>
 
         <div className="mt-10 mb-2 text-[10px] uppercase tracking-[0.22em] text-ink-500 border-t border-ink-800/60 pt-7">

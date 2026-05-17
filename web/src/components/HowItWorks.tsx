@@ -7,8 +7,8 @@ const steps = [
   {
     n: "01",
     label: "Grant",
-    headline: "Principal sets a shielded budget.",
-    body: "A cap, a counterparty whitelist, and a running tally. All three live as witnesses on the principal's machine. The chain only ever learns that an allowance exists and who the agent is.",
+    headline: "Principal sets a shielded policy.",
+    body: "A cap, a counterparty whitelist, and a running tally. All three live as witnesses on the principal's machine, not as escrowed funds in the contract. The chain only ever learns that an allowance exists and who the agent is.",
   },
   {
     n: "02",

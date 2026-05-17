@@ -26,7 +26,10 @@ const App = () => {
       <HowItWorks />
 
       <DemoVideo
-        embedUrl={import.meta.env.VITE_DEMO_EMBED_URL as string | undefined}
+        embedUrl={
+          (import.meta.env.VITE_DEMO_EMBED_URL as string | undefined) ??
+          "https://youtu.be/NrDovfmlol8"
+        }
         videoSrc={import.meta.env.VITE_DEMO_VIDEO_URL as string | undefined}
         poster={import.meta.env.VITE_DEMO_POSTER_URL as string | undefined}
       />
